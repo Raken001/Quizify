@@ -24,28 +24,6 @@ The project consists of two main components:
 - JWT authentication
 - bcryptjs for password hashing
 
-## Project Structure
-
-```
-Quizify/
-├── quizify-backend/          # Express.js API server
-│   ├── models/               # Database models
-│   ├── auth.middleware.js    # Authentication middleware
-│   ├── auth.routes.js        # Authentication routes
-│   ├── db.js                 # MySQL connection
-│   ├── mongo.js              # MongoDB connection
-│   ├── questions.routes.js   # Questions API endpoints
-│   ├── flashcards.routes.js  # Flashcards API endpoints
-│   └── server.js             # Main server file
-└── quizify-frontend/         # Angular application
-    └── src/
-        └── app/
-            └── pages/
-                ├── login/        # Login component
-                ├── questions/    # Questions management
-                ├── add-question/ # Add new questions
-                └── flashcards/   # Flashcards display
-```
 
 ## Prerequisites
 
