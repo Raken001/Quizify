@@ -1,0 +1,36 @@
+<h3>Add Question</h3>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div style="margin-bottom:10px;">
+    <label>Subject</label><br />
+    <input type="text" formControlName="subject" placeholder="e.g., Math" />
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <label>Question</label><br />
+    <input type="text" formControlName="question" placeholder="e.g., What is 2+2?" />
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <label>Options (comma-separated)</label><br />
+    <input type="text" formControlName="optionsCsv" placeholder="e.g., 3, 4, 5" />
+    <small style="opacity:.7;">Enter options separated by commas</small>
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <label>Correct Answer</label><br />
+    <input type="text" formControlName="correct_answer" placeholder="e.g., 4" />
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <label>Difficulty</label><br />
+    <input type="number" formControlName="difficulty_level" min="1" max="5" />
+  </div>
+
+  <button type="submit" [disabled]="submitting">Add</button>
+  &nbsp;<a routerLink="/questions">Cancel</a>
+</form>
+
+<p *ngIf="submitting">Saving…</p>
+<p *ngIf="error" style="color:crimson">{{ error }}</p>
+<p *ngIf="success" style="color:green">{{ success }}</p>

@@ -1,0 +1,37 @@
+<h2>Login</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- Email field -->
+  <label for="email">Email:</label>
+  <input id="email" type="email" formControlName="email" required />
+  <div *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+    <small *ngIf="form.controls['email'].errors?.['required']">Email is required.</small>
+    <small *ngIf="form.controls['email'].errors?.['email']">Enter a valid email.</small>
+  </div>
+
+  <!-- Password field -->
+  <label for="password">Password:</label>
+  <input id="password" type="password" formControlName="password" required />
+  <div *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
+    <small *ngIf="form.controls['password'].errors?.['required']">Password is required.</small>
+  </div>
+
+  <!-- Submit -->
+  <button type="submit" [disabled]="form.invalid">Login</button>
+</form>
+
+<!-- <hr />
+<p>Form status: {{ form.status }} | valid: {{ form.valid }}</p>
+<p>Email errors: {{ form.get('email')?.errors | json }}</p>
+<p>Password errors: {{ form.get('password')?.errors | json }}</p>
+<p>Current value: {{ form.value | json }}</p> -->
+
+
+<!-- Success message -->
+<p *ngIf="success()">{{ success() }}</p>
+
+<!-- Error message -->
+<p *ngIf="error()" style="color: red">{{ error() }}</p>
+
+<!-- Show token if available -->
+<p *ngIf="token">Token: {{ token }}</p>
