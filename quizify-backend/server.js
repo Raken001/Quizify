@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 connectMongo().catch(() => {
-  // we’ll still let the server start, but you’ll see an error if Mongo isn’t up
+  // let the server start, but display an error message if Mongo isn’t up
   console.warn('⚠️  Continuing without Mongo connection.');
 });
 

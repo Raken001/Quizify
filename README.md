@@ -19,8 +19,8 @@ The project consists of two main components:
 
 ### Backend
 - Node.js with Express.js
-- MySQL (for questions storage)
-- MongoDB (for flashcards storage)
+- MySQL (for user authentication data)
+- MongoDB (for questions and flashcards storage)
 - JWT authentication
 - bcryptjs for password hashing
 
@@ -107,21 +107,11 @@ npm install
 ### 5. Database Setup
 
 #### MySQL
-Create a MySQL database and run the following SQL to create the questions table:
+Create a MySQL database and run the following SQL to create the users table:
 
 ```sql
 CREATE DATABASE quizify;
 USE quizify;
-
-CREATE TABLE questions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  subject VARCHAR(255) NOT NULL,
-  question TEXT NOT NULL,
-  options JSON NOT NULL,
-  correct_answer VARCHAR(255) NOT NULL,
-  difficulty_level INT DEFAULT 1,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -132,7 +122,7 @@ CREATE TABLE users (
 ```
 
 #### MongoDB
-MongoDB collections will be created automatically when the application runs.
+MongoDB collections for questions and flashcards will be created automatically when the application runs.
 
 ## Running the Application
 
@@ -207,15 +197,16 @@ npm run build
 
 ## Database Design
 
-### MySQL (Questions)
-The application uses MySQL to store quiz questions with the following structure:
-- Questions with multiple choice options
-- Difficulty levels
-- Subject categorization
+### MySQL (User Authentication)
+The application uses MySQL to store user authentication data:
+- User accounts with email and password
+- User registration and login information
 
-### MongoDB (Flashcards)
-MongoDB stores flashcard data with flexible document structure:
-- Question-answer pairs
+### MongoDB (Questions and Flashcards)
+MongoDB stores both questions and flashcards with flexible document structure:
+- Quiz questions with multiple choice options
+- Difficulty levels and subject categorization
+- Question-answer pairs for flashcards
 - User-specific flashcards
 - Additional metadata
 
@@ -226,22 +217,3 @@ MongoDB stores flashcard data with flexible document structure:
 1. Backend: Add routes in the appropriate route files
 2. Frontend: Create new components in the `pages` directory
 3. Update routing in `app.routes.ts`
-
-### Code Style
-
-The project uses Prettier for code formatting with the following configuration:
-- Print width: 100 characters
-- Single quotes
-- Specific overrides for different file types
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the MIT License.
