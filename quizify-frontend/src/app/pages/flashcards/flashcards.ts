@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
 export class Flashcards {
   loading = true;
   error: string | null = null;
-  data: Array<{ id:number; subject:string; question:string; correct_answer:string }> = [];
+  data: Array<{ _id?:string; id?:string; subject:string; question:string; answer:string; tags?:string[] }> = [];
 
   index = 0;
   showAnswer = false;
@@ -25,10 +25,12 @@ export class Flashcards {
       next: (rows) => {
         // keep only fields we need for cards
         this.data = rows.map(r => ({
+          _id: r._id,
           id: r.id,
           subject: r.subject,
           question: r.question,
-          correct_answer: r.correct_answer
+          answer: r.answer,
+          tags: r.tags || []
         }));
         this.loading = false;
       },

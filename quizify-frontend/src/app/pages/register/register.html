@@ -1,0 +1,17 @@
+<div class="register-container">
+  <h2>Register</h2>
+  <form [formGroup]="form" (ngSubmit)="register()">
+    <input type="email" formControlName="email" placeholder="Email" required />
+    <input type="password" formControlName="password" placeholder="Password" required />
+    <input type="text" formControlName="firstName" placeholder="First Name" />
+    <input type="text" formControlName="lastName" placeholder="Last Name" />
+    <button type="submit" [disabled]="loading || form.invalid">Register</button>
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+  </form>
+  @if (loading) {
+    <div>Registering...</div>
+  }
+  <a routerLink="/login">Already have an account? Login</a>
+</div>

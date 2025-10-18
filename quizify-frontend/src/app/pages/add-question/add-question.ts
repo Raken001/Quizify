@@ -27,9 +27,9 @@ export class AddQuestion implements OnInit {
     this.form = this.fb.group({
       subject: ['', Validators.required],
       question: ['', Validators.required],
-      optionsCsv: ['', Validators.required],        // comma-separated options
-      correct_answer: ['', Validators.required],
-      difficulty_level: [1, [Validators.required]]
+      optionsCsv: [''],        // comma-separated options (optional)
+      answer: ['', Validators.required],
+      difficulty: ['medium', Validators.required]
     });
   }
 
@@ -45,23 +45,25 @@ export class AddQuestion implements OnInit {
 
     this.submitting = true;
 
-    const { subject, question, optionsCsv, correct_answer, difficulty_level } = this.form.value;
+    const { subject, question, optionsCsv, answer, difficulty } = this.form.value;
 
-    // transform "a, b, c" -> ["a","b","c"]
-    const options = String(optionsCsv)
-      .split(',')
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0);
+    // transform "a, b, c" -> ["a","b","c"] (only if options provided)
+    const tags = optionsCsv 
+      ? String(optionsCsv)
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter((s: string) => s.length > 0)
+      : [];
 
     const payload = {
       subject,
       question,
-      options,
-      correct_answer,
-      difficulty_level: Number(difficulty_level) || 1
+      answer,
+      difficulty,
+      tags
     };
 
-    this.http.post('http://localhost:8000/flashcards/add', payload)
+    this.http.post('http://localhost:8000/flashcards', payload)
       .subscribe({
         next: () => {
           this.success = 'Question added!';

@@ -1,0 +1,38 @@
+<div class="admin-container">
+  <h2>Admin Panel</h2>
+  @if (loading) {
+    <div>Loading...</div>
+  }
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+  @if (users.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user._id) {
+          <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile?.firstName || '-' }}</td>
+            <td>{{ user.profile?.lastName || '-' }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <button (click)="deleteUser(user._id)">Delete</button>
+              @if (user.role !== 'admin') {
+                <button (click)="promoteUser(user._id)">Promote to Admin</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

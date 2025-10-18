@@ -1,0 +1,18 @@
+<nav class="navbar">
+  <a routerLink="/" class="logo">Quizify</a>
+  <ul class="nav-links">
+    <li><a routerLink="/flashcards">Flashcards</a></li>
+    <li><a routerLink="/questions">Questions</a></li>
+    <li><a routerLink="/quiz">Take Quiz</a></li>
+    @if (auth.isLoggedIn()) {
+      <li><a routerLink="/profile">Profile</a></li>
+    }
+    @if (!auth.isLoggedIn()) {
+      <li><a routerLink="/login">Login</a></li>
+      <li><a routerLink="/register">Register</a></li>
+    }
+    @if (auth.isLoggedIn()) {
+      <li><a (click)="logout()">Logout</a></li>
+    }
+  </ul>
+</nav>

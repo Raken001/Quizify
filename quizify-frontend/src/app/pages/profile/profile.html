@@ -1,0 +1,26 @@
+@if (loading) {
+  <p>Loading user info...</p>
+}
+@if (error) {
+  <p style="color: red">{{ error }}</p>
+}
+@if (user && !loading) {
+  <div class="profile-container">
+    <h2>User Profile</h2>
+    <div class="profile-info">
+      <div><strong>Email:</strong> {{ user.email }}</div>
+      <div><strong>First Name:</strong> {{ user.firstName }}</div>
+      <div><strong>Last Name:</strong> {{ user.lastName }}</div>
+      <div><strong>Role:</strong> {{ user.role }}</div>
+      @if (user.stats) {
+        <hr />
+        <h3>Statistics</h3>
+        <div><strong>Total Flashcards:</strong> {{ user.stats.totalFlashcards }}</div>
+        <div><strong>Quizzes Taken:</strong> {{ user.stats.quizzesTaken }}</div>
+        <div><strong>Average Score:</strong> {{ user.stats.averageScore }}%</div>
+        <div><strong>Study Streak:</strong> {{ user.stats.studyStreak }} days</div>
+      }
+    </div>
+    <button (click)="logout()">Logout</button>
+  </div>
+}

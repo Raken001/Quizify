@@ -12,10 +12,17 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
-# Build output
+# Compiled TypeScript output
 dist/
 build/
+*.js
 *.js.map
+*.d.ts
+!jest.config.js
+
+# But keep model JS files if needed for legacy
+# (Uncomment if you have intentional .js files)
+# !models/*.js
 
 # Logs
 logs/
@@ -40,3 +47,7 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+# Database
+*.sqlite
+*.db

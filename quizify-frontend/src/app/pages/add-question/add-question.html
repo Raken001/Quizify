@@ -12,25 +12,35 @@
   </div>
 
   <div style="margin-bottom:10px;">
-    <label>Options (comma-separated)</label><br />
+    <label>Options (comma-separated, optional)</label><br />
     <input type="text" formControlName="optionsCsv" placeholder="e.g., 3, 4, 5" />
-    <small style="opacity:.7;">Enter options separated by commas</small>
+    <small style="opacity:.7;">Enter options separated by commas (optional)</small>
   </div>
 
   <div style="margin-bottom:10px;">
-    <label>Correct Answer</label><br />
-    <input type="text" formControlName="correct_answer" placeholder="e.g., 4" />
+    <label>Answer</label><br />
+    <input type="text" formControlName="answer" placeholder="e.g., 4" />
   </div>
 
   <div style="margin-bottom:10px;">
     <label>Difficulty</label><br />
-    <input type="number" formControlName="difficulty_level" min="1" max="5" />
+    <select formControlName="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium" selected>Medium</option>
+      <option value="hard">Hard</option>
+    </select>
   </div>
 
   <button type="submit" [disabled]="submitting">Add</button>
   &nbsp;<a routerLink="/questions">Cancel</a>
 </form>
 
-<p *ngIf="submitting">Saving…</p>
-<p *ngIf="error" style="color:crimson">{{ error }}</p>
-<p *ngIf="success" style="color:green">{{ success }}</p>
+@if (submitting) {
+  <p>Saving…</p>
+}
+@if (error) {
+  <p style="color:crimson">{{ error }}</p>
+}
+@if (success) {
+  <p style="color:green">{{ success }}</p>
+}

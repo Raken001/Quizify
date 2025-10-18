@@ -1,0 +1,48 @@
+<div class="quiz-container">
+  <h2>Quiz</h2>
+  
+  @if (loading) {
+    <div>Loading...</div>
+  }
+  
+  @if (error) {
+    <div class="error">{{ error }}</div>
+    <button (click)="start()">Try Again</button>
+  }
+  
+  @if (currentQuestion && !quizComplete) {
+    <div>
+      <p>Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
+      <div class="question">
+        <strong>Subject:</strong> {{ currentQuestion.subject }}<br/>
+        <strong>Q:</strong> {{ currentQuestion.question }}
+      </div>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <input type="text" formControlName="answer" placeholder="Your answer" required />
+        <button type="submit" [disabled]="loading || !form.value.answer">Submit Answer</button>
+      </form>
+      @if (result && result.isCorrect !== undefined) {
+        <div [class]="result.isCorrect ? 'result-correct' : 'result-incorrect'">
+          {{ result.isCorrect ? '✓ Correct!' : '✗ Incorrect' }}
+        </div>
+      }
+    </div>
+  }
+  
+  @if (quizComplete) {
+    <div class="quiz-complete">
+      <h3>Quiz Complete!</h3>
+      @if (result && result.summary) {
+        <div class="results">
+          <p><strong>Score:</strong> {{ result.summary.score }}%</p>
+          <p><strong>Grade:</strong> {{ result.summary.grade }}</p>
+          <p><strong>Correct:</strong> {{ result.summary.correctAnswers }} / {{ result.summary.totalQuestions }}</p>
+          <p><strong>Time Spent:</strong> {{ result.summary.timeSpent }} seconds</p>
+        </div>
+      }
+      <div style="margin-top: 20px;">
+        <button (click)="restartQuiz()">Take Another Quiz</button>
+      </div>
+    </div>
+  }
+</div>

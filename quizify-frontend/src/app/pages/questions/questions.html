@@ -1,34 +1,42 @@
 <h3>Questions</h3>
 
-<p *ngIf="loading">Loading…</p>
-<p *ngIf="error" style="color:crimson">{{ error }}</p>
+@if (loading) {
+  <p>Loading…</p>
+}
+@if (error) {
+  <p style="color:crimson">{{ error }}</p>
+}
 <p><a routerLink="/flashcards">Study as Flashcards</a></p>
 <p><a routerLink="/questions/add">+ Add Question</a></p>
-<table *ngIf="!loading && !error && data?.length" border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Subject</th>
-      <th>Question</th>
-      <th>Options</th>
-      <th>Answer</th>
-      <th>Difficulty</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let q of data">
-      <td>{{ q.id }}</td>
-      <td>{{ q.subject }}</td>
-      <td>{{ q.question }}</td>
-      <td *ngIf="q.options && q.options.join">{{ q.options.join(', ') }}</td>
-      <td *ngIf="!q.options?.join">{{ q.options }}</td>
-      <td>{{ q.difficulty_level }}</td>
-      <td>
-        <button (click)="delete(q._id || q.id)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+@if (!loading && !error && data.length) {
+  <table border="1" cellpadding="6">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Question</th>
+        <th>Answer</th>
+        <th>Tags</th>
+        <th>Difficulty</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (q of data; track q._id || q.id) {
+        <tr>
+          <td>{{ q.subject }}</td>
+          <td>{{ q.question }}</td>
+          <td>{{ q.answer }}</td>
+          <td>{{ q.tags && q.tags.length ? q.tags.join(', ') : '-' }}</td>
+          <td>{{ q.difficulty }}</td>
+          <td>
+            <button (click)="delete(q._id || q.id)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
 
-<p *ngIf="!loading && !error && !data?.length">No questions yet.</p>
+@if (!loading && !error && !data.length) {
+  <p>No questions yet.</p>
+}
