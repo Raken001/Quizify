@@ -40,3 +40,10 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+bulk-flashcards.sh
+
+# Documentation files (local only)
+BACKEND-IMPLEMENTATION.md
+code.md
+
