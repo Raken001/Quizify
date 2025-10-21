@@ -26,14 +26,21 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+    // Use same secret fallback as in auth.routes.ts to avoid mismatches
+    const secret = process.env.JWT_SECRET || 'dev_secret';
+    const payload = jwt.verify(token, secret) as JWTPayload;
     req.user = {
       userId: payload.userId,
       email: payload.email,
       role: payload.role
     };
     next();
-  } catch {
+  } catch (err: any) {
+    // Provide a clearer reason to help the frontend handle it gracefully
+    if (err?.name === 'TokenExpiredError') {
+      res.status(401).json({ error: 'token expired' });
+      return;
+    }
     res.status(401).json({ error: 'invalid or expired token' });
   }
 }
