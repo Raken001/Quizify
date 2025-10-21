@@ -38,6 +38,15 @@ export class Questions {
     this.refresh();
   }
 
+  difficultyLabel(row: any): string {
+    if (row?.difficulty) return row.difficulty;
+    const lvl = Number(row?.difficulty_level);
+    if (lvl === 1) return 'easy';
+    if (lvl === 2) return 'medium';
+    if (lvl === 3) return 'hard';
+    return '-';
+    }
+
   // delete one flashcard by _id (or id fallback)
   delete(id: string) {
     if (!id) return;

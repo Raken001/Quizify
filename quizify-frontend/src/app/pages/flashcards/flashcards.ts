@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-flashcards',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './flashcards.html',
   styleUrl: './flashcards.css'
 })
@@ -17,11 +18,27 @@ export class Flashcards {
 
   index = 0;
   showAnswer = false;
+  subjects: string[] = [];
+  selectedSubject: string = '';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<any[]>('http://localhost:8000/flashcards').subscribe({
+    // Load subjects for filter dropdown
+    this.http.get<string[]>('http://localhost:8000/flashcards/subjects').subscribe({
+      next: (subs) => this.subjects = subs || [],
+      error: () => {/* non-blocking */}
+    });
+    this.loadCards();
+  }
+
+  loadCards() {
+    this.loading = true;
+    this.error = null;
+    const url = this.selectedSubject
+      ? `http://localhost:8000/flashcards?subject=${encodeURIComponent(this.selectedSubject)}`
+      : `http://localhost:8000/flashcards`;
+    this.http.get<any[]>(url).subscribe({
       next: (rows) => {
         // keep only fields we need for cards
         this.data = rows.map(r => ({
@@ -29,10 +46,13 @@ export class Flashcards {
           id: r.id,
           subject: r.subject,
           question: r.question,
-          answer: r.answer,
-          tags: r.tags || []
+          // Support both old (answer/tags) and bulk import fields (correct_answer/options)
+          answer: r.answer || r.correct_answer,
+          tags: (r.tags && Array.isArray(r.tags) ? r.tags : (Array.isArray(r.options) ? r.options : []))
         }));
         this.loading = false;
+        this.index = 0;
+        this.showAnswer = false;
       },
       error: (err) => {
         this.error = err?.error?.error || 'Failed to load flashcards';

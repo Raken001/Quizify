@@ -15,7 +15,8 @@
         <th>Subject</th>
         <th>Question</th>
         <th>Answer</th>
-        <th>Tags</th>
+  <th>Options</th>
+  <th>Tags</th>
         <th>Difficulty</th>
         <th>Actions</th>
       </tr>
@@ -25,10 +26,13 @@
         <tr>
           <td>{{ q.subject }}</td>
           <td>{{ q.question }}</td>
-          <td>{{ q.answer }}</td>
+          <td>{{ q.answer || q.correct_answer }}</td>
+          <td>{{ q.options && q.options.length ? q.options.join(', ') : '-' }}</td>
           <td>{{ q.tags && q.tags.length ? q.tags.join(', ') : '-' }}</td>
-          <td>{{ q.difficulty }}</td>
+          <td>{{ difficultyLabel(q) }}</td>
           <td>
+            <a [routerLink]="['/questions/edit', (q._id || q.id)]">Edit</a>
+            &nbsp;|&nbsp;
             <button (click)="delete(q._id || q.id)">Delete</button>
           </td>
         </tr>

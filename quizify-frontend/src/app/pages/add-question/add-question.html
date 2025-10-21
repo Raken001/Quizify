@@ -1,4 +1,4 @@
-<h3>Add Question</h3>
+<h3>{{ isEdit ? 'Edit Question' : 'Add Question' }}</h3>
 
 <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
   <div style="margin-bottom:10px;">
@@ -31,7 +31,7 @@
     </select>
   </div>
 
-  <button type="submit" [disabled]="submitting">Add</button>
+  <button type="submit" [disabled]="submitting">{{ isEdit ? 'Save' : 'Add' }}</button>
   &nbsp;<a routerLink="/questions">Cancel</a>
 </form>
 

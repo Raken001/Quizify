@@ -1,16 +1,33 @@
 <div class="quiz-container">
   <h2>Quiz</h2>
   
-  @if (loading) {
+  @if (!quizStarted) {
+    <div class="quiz-setup">
+      <p>Select a subject to start your quiz:</p>
+      <div style="margin: 1rem 0;">
+        <label>
+          Subject:
+          <select [(ngModel)]="selectedSubject" style="margin-left: 0.5rem; padding: 0.5rem;">
+            <option value="">-- Select Subject --</option>
+            <option value="all">All Subjects</option>
+            @for (s of subjects; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <button (click)="start()" [disabled]="!selectedSubject || loading">Start Quiz</button>
+      @if (error) {
+        <div class="error" style="margin-top: 1rem;">{{ error }}</div>
+      }
+    </div>
+  }
+  
+  @if (loading && quizStarted) {
     <div>Loading...</div>
   }
   
-  @if (error) {
-    <div class="error">{{ error }}</div>
-    <button (click)="start()">Try Again</button>
-  }
-  
-  @if (currentQuestion && !quizComplete) {
+  @if (currentQuestion && !quizComplete && quizStarted) {
     <div>
       <p>Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
       <div class="question">
@@ -18,8 +35,20 @@
         <strong>Q:</strong> {{ currentQuestion.question }}
       </div>
       <form [formGroup]="form" (ngSubmit)="submit()">
-        <input type="text" formControlName="answer" placeholder="Your answer" required />
-        <button type="submit" [disabled]="loading || !form.value.answer">Submit Answer</button>
+        @if (getOptions().length) {
+          <div style="display:flex; flex-direction:column; gap:.5rem; margin: 1rem 0;">
+            @for (opt of getOptions(); track opt) {
+              <label style="display:flex; align-items:center; gap:.5rem;">
+                <input type="radio" name="answer" [value]="opt" [checked]="selectedOption===opt" (change)="selectedOption=opt" />
+                <span>{{ opt }}</span>
+              </label>
+            }
+          </div>
+          <button type="submit" [disabled]="loading || !selectedOption">Submit Answer</button>
+        } @else {
+          <input type="text" formControlName="answer" placeholder="Your answer" required />
+          <button type="submit" [disabled]="loading || !form.value.answer">Submit Answer</button>
+        }
       </form>
       @if (result && result.isCorrect !== undefined) {
         <div [class]="result.isCorrect ? 'result-correct' : 'result-incorrect'">

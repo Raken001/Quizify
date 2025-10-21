@@ -1,16 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { QuizService } from '../../services/quiz.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })
 export class Quiz implements OnInit {
+  quizStarted = false;
+  subjects: string[] = [];
+  selectedSubject: string = '';
+  
   sessionId: string | null = null;
   currentQuestion: any = null;
   currentQuestionIndex = 0;
@@ -20,22 +25,35 @@ export class Quiz implements OnInit {
   loading = false;
   form: FormGroup;
   quizComplete = false;
+  selectedOption: string | null = null;
 
-  constructor(private quizService: QuizService, private fb: FormBuilder) {
+  constructor(private quizService: QuizService, private fb: FormBuilder, private http: HttpClient) {
     this.form = this.fb.group({
       answer: ['']
     });
   }
 
   ngOnInit() {
-    this.start();
+    // Load subjects for selection
+    this.http.get<string[]>('http://localhost:8000/flashcards/subjects').subscribe({
+      next: (subs) => this.subjects = subs || [],
+      error: () => {/* non-blocking */}
+    });
   }
 
   start() {
+    if (!this.selectedSubject) {
+      this.error = 'Please select a subject first';
+      return;
+    }
     this.loading = true;
     this.error = '';
     this.quizComplete = false;
-    this.quizService.start({ count: 10, randomOrder: true }).subscribe({
+    const options: any = { count: 10, randomOrder: true };
+    if (this.selectedSubject && this.selectedSubject !== 'all') {
+      options.subject = this.selectedSubject;
+    }
+    this.quizService.start(options).subscribe({
       next: (data: any) => {
         this.sessionId = data.sessionId;
         this.totalQuestions = data.totalQuestions;
@@ -43,6 +61,8 @@ export class Quiz implements OnInit {
         this.currentQuestionIndex = 0;
         this.loading = false;
         this.form.reset();
+        this.selectedOption = null;
+        this.quizStarted = true;
       },
       error: err => {
         this.error = err?.error?.error || 'Failed to start quiz. Make sure you have added some questions first.';
@@ -53,7 +73,9 @@ export class Quiz implements OnInit {
 
   submit() {
     if (!this.sessionId || !this.currentQuestion) return;
-    const answer = this.form.value.answer;
+    // Prefer multiple-choice selection when options are present
+    const isMCQ = this.getOptions().length > 0;
+    const answer = isMCQ ? this.selectedOption : this.form.value.answer;
     if (!answer) return;
 
     this.loading = true;
@@ -92,6 +114,7 @@ export class Quiz implements OnInit {
         if (nextQuestion) {
           this.currentQuestion = nextQuestion;
           this.form.reset();
+          this.selectedOption = null;
           this.loading = false;
         } else {
           // No more questions - complete quiz
@@ -144,6 +167,16 @@ export class Quiz implements OnInit {
     this.result = null;
     this.error = '';
     this.quizComplete = false;
-    this.start();
+    this.quizStarted = false;
+    this.selectedSubject = '';
+  }
+
+  getOptions(): string[] {
+    if (!this.currentQuestion) return [];
+    const opts = Array.isArray(this.currentQuestion.options)
+      ? this.currentQuestion.options
+      : (Array.isArray(this.currentQuestion.tags) ? this.currentQuestion.tags : []);
+    // Ensure string array
+    return (opts || []).map((o: any) => String(o));
   }
 }

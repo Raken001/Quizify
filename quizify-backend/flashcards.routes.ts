@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import Flashcard from './models/Flashcard.js';
 import User from './models/User.js';
-import { AuthRequest, FlashcardBody, FlashcardQuery } from './types.js';
+import { AuthRequest, FlashcardQuery } from './types.js';
 
 const router = Router();
 
@@ -78,7 +78,20 @@ router.get('/:id', async (req: AuthRequest, res: Response) => {
 router.post('/', async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
-    const { question, answer, subject, difficulty, tags } = req.body as FlashcardBody;
+    // Accept both legacy and bulk-import shapes
+    const body: any = req.body || {};
+    const subject = body.subject;
+    const question = body.question;
+    const answer = body.answer || body.correct_answer;
+    // tags or options as tags
+    const tags = Array.isArray(body.tags) ? body.tags : (Array.isArray(body.options) ? body.options : []);
+    // difficulty string or numeric difficulty_level
+    let difficulty = body.difficulty as any;
+    if (!difficulty && body.difficulty_level !== undefined) {
+      const lvl = Number(body.difficulty_level);
+      difficulty = lvl === 1 ? 'easy' : lvl === 2 ? 'medium' : lvl === 3 ? 'hard' : 'medium';
+    }
+
     if (!subject || !question || !answer) {
       res.status(400).json({ error: 'subject, question, and answer are required' });
       return;
@@ -105,7 +118,16 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
     const { id } = req.params;
-    const { question, answer, subject, difficulty, tags } = req.body as FlashcardBody;
+    const body: any = req.body || {};
+    const question = body.question;
+    const answer = body.answer || body.correct_answer;
+    const subject = body.subject;
+    let difficulty = body.difficulty as any;
+    if (!difficulty && body.difficulty_level !== undefined) {
+      const lvl = Number(body.difficulty_level);
+      difficulty = lvl === 1 ? 'easy' : lvl === 2 ? 'medium' : lvl === 3 ? 'hard' : 'medium';
+    }
+    const tags = Array.isArray(body.tags) ? body.tags : (Array.isArray(body.options) ? body.options : undefined);
     // Verify ownership
     const existing = await Flashcard.findOne({ _id: id, userId });
     if (!existing) {
@@ -114,11 +136,11 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
     }
     // Build update object
     const updateData: any = {};
-    if (subject !== undefined) updateData.subject = subject;
-    if (question !== undefined) updateData.question = question;
-    if (answer !== undefined) updateData.answer = answer;
-    if (difficulty !== undefined) updateData.difficulty = difficulty;
-    if (tags !== undefined) updateData.tags = Array.isArray(tags) ? tags : [];
+  if (subject !== undefined) updateData.subject = subject;
+  if (question !== undefined) updateData.question = question;
+  if (answer !== undefined) updateData.answer = answer;
+  if (difficulty !== undefined) updateData.difficulty = difficulty;
+  if (tags !== undefined) updateData.tags = Array.isArray(tags) ? tags : [];
     const updated = await Flashcard.findByIdAndUpdate(
       id,
       { $set: updateData },

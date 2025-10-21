@@ -98,12 +98,13 @@ router.put('/:sessionId/answer', async (req: AuthRequest, res: Response) => {
       res.status(404).json({ error: 'Flashcard not found' });
       return;
     }
-    const isCorrect = userAnswer.toLowerCase().trim() === flashcard.answer.toLowerCase().trim();
+    const correct = (flashcard as any).answer || (flashcard as any).correct_answer || '';
+    const isCorrect = String(userAnswer).toLowerCase().trim() === String(correct).toLowerCase().trim();
     // Add answer to session
     session.answers.push({
       questionId,
       userAnswer,
-      correctAnswer: flashcard.answer,
+      correctAnswer: correct,
       isCorrect,
       timeSpent: Number(timeSpent) || 0
     });
