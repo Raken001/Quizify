@@ -1,4 +1,11 @@
 {
+  "name": "quizify-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd quizify-frontend && npm ci && npm run build",
+    "build:frontend": "cd quizify-frontend && npm ci && npm run build",
+    "start": "cd quizify-frontend && npm run start"
+  },
   "dependencies": {
     "@angular/cli": "^20.1.6"
   }
