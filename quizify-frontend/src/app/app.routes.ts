@@ -20,6 +20,6 @@ export const routes: Routes = [
   { path: 'flashcards', component: Flashcards, canActivate: [AuthGuard] },
   { path: 'quiz', component: Quiz, canActivate: [AuthGuard] },
   { path: 'admin', component: Admin, canActivate: [AuthGuard] },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: Flashcards, canActivate: [AuthGuard]  },
   { path: '**', redirectTo: 'login' }
 ];
