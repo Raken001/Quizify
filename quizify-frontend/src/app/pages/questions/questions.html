@@ -1,46 +1,47 @@
 <h3>Questions</h3>
 
-@if (loading) {
-  <p>Loading…</p>
-}
-@if (error) {
-  <p style="color:crimson">{{ error }}</p>
-}
-<p><a routerLink="/flashcards">Study as Flashcards</a></p>
-<p><a routerLink="/questions/add">+ Add Question</a></p>
+@if (loading) { <p>Loading…</p> }
+@if (error)   { <p style="color:crimson">{{ error }}</p> }
+
+<div class="toolbar">
+  <a class="btn btn-outline" routerLink="/flashcards">Study as Flashcards</a>
+  <a class="btn" routerLink="/questions/add">+ Add Question</a>
+</div>
+
 @if (!loading && !error && data.length) {
-  <table border="1" cellpadding="6">
-    <thead>
-      <tr>
-        <th>Subject</th>
-        <th>Question</th>
-        <th>Answer</th>
-  <th>Options</th>
-  <th>Tags</th>
-        <th>Difficulty</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (q of data; track q._id || q.id) {
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
         <tr>
-          <td>{{ q.subject }}</td>
-          <td>{{ q.question }}</td>
-          <td>{{ q.answer || q.correct_answer }}</td>
-          <td>{{ q.options && q.options.length ? q.options.join(', ') : '-' }}</td>
-          <td>{{ q.tags && q.tags.length ? q.tags.join(', ') : '-' }}</td>
-          <td>{{ difficultyLabel(q) }}</td>
-          <td>
-            <a [routerLink]="['/questions/edit', (q._id || q.id)]">Edit</a>
-            &nbsp;|&nbsp;
-            <button (click)="delete(q._id || q.id)">Delete</button>
-          </td>
+          <th>Subject</th>
+          <th>Question</th>
+          <th>Answer</th>
+          <th>Options</th>
+          <th>Tags</th>
+          <th>Difficulty</th>
+          <th>Actions</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (q of data; track q._id || q.id) {
+          <tr>
+            <td>{{ q.subject }}</td>
+            <td>{{ q.question }}</td>
+            <td>{{ q.answer || q.correct_answer }}</td>
+            <td>{{ q.options?.length ? q.options.join(', ') : '-' }}</td>
+            <td>{{ q.tags?.length ? q.tags.join(', ') : '-' }}</td>
+            <td>{{ difficultyLabel(q) }}</td>
+            <td>
+              <div class="actions">
+                <a class="btn btn-outline" [routerLink]="['/questions/edit', (q._id || q.id)]">Edit</a>
+                <button class="btn" (click)="delete(q._id || q.id)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 }
 
-@if (!loading && !error && !data.length) {
-  <p>No questions yet.</p>
-}
+@if (!loading && !error && !data.length) { <p>No questions yet.</p> }

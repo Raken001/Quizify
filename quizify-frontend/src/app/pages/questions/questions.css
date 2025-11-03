@@ -1,0 +1,121 @@
+/* Page links at the top */
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+
+/* Reusable button styles (same vibe as flashcards) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.btn:hover { background: #1259a7; }
+
+.btn-outline {
+  background: transparent;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+.btn-outline:hover {
+  background: #eaf2ff;
+}
+
+/* Table container */
+.table-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;   /* responsive on small screens */
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  table-layout: fixed; /* ensures column widths are respected */
+}
+
+/* cells */
+.table th,
+.table td {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* header */
+.table thead th {
+  background: #eaf2ff;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* hover */
+.table tbody tr:hover {
+  background: #f7fbff;
+}
+
+/* specific column widths */
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 120px;    /* Subject */
+  min-width: 100px;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 100px;    /* Tags */
+  min-width: 90px;
+}
+
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 110px;    /* Difficulty */
+  min-width: 90px;
+}
+
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  width: 130px;    /* Actions */
+  min-width: 110px;
+}
+
+/* let Answer and Options columns stretch naturally */
+.table th:nth-child(3),
+.table td:nth-child(3),
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: auto;
+}
+
+/* Responsive scroll container */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+/* Align action buttons neatly */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
