@@ -1,16 +1,16 @@
-<h3>Flashcards</h3>
-
-
-<div style="margin:8px 0" *ngIf="subjects?.length">
-  <label>
-    Subject:
-    <select [(ngModel)]="selectedSubject" (change)="loadCards()">
-      <option value="">All</option>
-      @for (s of subjects; track s) {
-        <option [value]="s">{{ s }}</option>
-      }
-    </select>
-  </label>
+<div class="header">
+  <h3>Flashcards</h3>
+  <div style="margin:8px 0" *ngIf="subjects?.length">
+    <label>
+      Subject:
+      <select [(ngModel)]="selectedSubject" (change)="loadCards()">
+        <option value="">All</option>
+        @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </label>
+  </div>
 </div>
 
 <div class="flashcards-container">

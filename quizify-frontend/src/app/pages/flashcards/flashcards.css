@@ -1,3 +1,7 @@
+.header{
+  padding: 0rem 2rem;
+}
+
 .flashcards-container {
   max-width: 600px;
   margin: 40px auto;
