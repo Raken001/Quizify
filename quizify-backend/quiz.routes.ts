@@ -98,7 +98,15 @@ router.put('/:sessionId/answer', async (req: AuthRequest, res: Response) => {
       res.status(404).json({ error: 'Flashcard not found' });
       return;
     }
-    const correct = (flashcard as any).answer || (flashcard as any).correct_answer || '';
+    // Use the canonical `answer` field from the Flashcard model.
+    const correct = (flashcard as any).answer;
+    // If the flashcard has no stored answer, abort — pushing an empty string
+    // will fail the QuizSession schema which requires `correctAnswer`.
+    if (!correct || String(correct).trim() === '') {
+      console.error('PUT /quiz/:sessionId/answer error: flashcard missing answer', { questionId, flashcardId: (flashcard as any)._id });
+      res.status(500).json({ error: 'Flashcard has no stored answer; cannot validate response' });
+      return;
+    }
     const isCorrect = String(userAnswer).toLowerCase().trim() === String(correct).toLowerCase().trim();
     // Add answer to session
     session.answers.push({
