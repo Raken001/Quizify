@@ -16,19 +16,19 @@ export class App {
 
   health: unknown = null;
 
-  // ⬇️ ADD THIS FIELD
+  // ADD THIS FIELD
   me: unknown = null;
 
-  // ⬇️ INJECT HTTP CLIENT
+  // INJECT HTTP CLIENT
   constructor(private http: HttpClient) {}
 
-  // ⬇️ FETCH BACKEND HEALTH ON LOAD
+  // FETCH BACKEND HEALTH ON LOAD
   ngOnInit() {
     this.http.get('http://localhost:8000/health')
       .subscribe(res => this.health = res);
   }
 
-  // ⬇️ ADD THIS METHOD (used by the button in app.html)
+  // ⬇DD THIS METHOD (used by the button in app.html)
   fetchMe() {
     this.http.get('http://localhost:8000/me').subscribe({
       next: res => this.me = res,
