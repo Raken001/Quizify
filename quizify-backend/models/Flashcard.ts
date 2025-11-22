@@ -70,7 +70,7 @@ flashcardSchema.index({ userId: 1, tags: 1 });
 flashcardSchema.index({ userId: 1, createdAt: -1 });
 
 // Text index for search functionality
-flashcardSchema.index({ question: 'text', answer: 'text' });
+flashcardSchema.index({ userId: 1, question: 'text', answer: 'text' });
 
 const Flashcard = mongoose.model<IFlashcard>('Flashcard', flashcardSchema);
 
