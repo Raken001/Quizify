@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import authRoutes from './auth.routes.js';
-import flashcardsRoutes from './flashcards.routes.js';
-import quizRoutes from './quiz.routes.js';
-import usersRoutes from './users.routes.js';
-import adminRoutes from './admin.routes.js';
-import { requireAuth } from './auth.middleware.js';
-import { connectMongo } from './mongo.js';
+import authRoutes from './routes/auth.routes';
+import flashcardsRoutes from './routes/flashcards.routes.js';
+import quizRoutes from './routes/quiz.routes.js';
+import usersRoutes from './routes/users.routes';
+import adminRoutes from './routes/admin.routes';
+import { requireAuth } from './middleware/auth.middleware.js';
+import { connectMongo } from './config/mongo.js';
 
 const app = express();
 

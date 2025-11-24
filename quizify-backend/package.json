@@ -6,9 +6,9 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch server.ts",
+    "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
-    "start:dev": "tsx server.ts",
+    "start:dev": "tsx src/server.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

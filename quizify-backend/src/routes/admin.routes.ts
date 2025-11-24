@@ -1,10 +1,10 @@
 import { Router, Response } from 'express';
-import User from './models/User.js';
-import Flashcard from './models/Flashcard.js';
-import QuizResult from './models/QuizResult.js';
-import SystemStats from './models/SystemStats.js';
-import { AuthRequest } from './types.js';
-import { requireAdmin } from './auth.middleware.js';
+import User from '../models/User.js';
+import Flashcard from '../models/Flashcard.js';
+import QuizResult from '../models/QuizResult.js';
+import SystemStats from '../models/SystemStats.js';
+import { AuthRequest } from '../types/types.js';
+import { requireAdmin } from '../middleware/auth.middleware.js';
 
 const router = Router();
 

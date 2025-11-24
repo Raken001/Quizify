@@ -1,9 +1,9 @@
 import { Router, Response } from 'express';
-import QuizSession from './models/QuizSession.js';
-import QuizResult from './models/QuizResult.js';
-import Flashcard from './models/Flashcard.js';
-import User from './models/User.js';
-import { AuthRequest } from './types.js';
+import QuizSession from '../models/QuizSession.js';
+import QuizResult from '../models/QuizResult.js';
+import Flashcard from '../models/Flashcard.js';
+import User from '../models/User.js';
+import { AuthRequest } from '../types/types.js';
 
 const router = Router();
 

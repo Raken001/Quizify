@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
-import Flashcard from './models/Flashcard.js';
-import User from './models/User.js';
-import { AuthRequest, FlashcardQuery } from './types.js';
+import Flashcard from '../models/Flashcard.js';
+import User from '../models/User.js';
+import { AuthRequest, FlashcardQuery } from '../types/types.js';
 
 const router = Router();
 
