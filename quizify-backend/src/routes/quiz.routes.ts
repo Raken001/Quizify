@@ -170,6 +170,7 @@ router.post('/:sessionId/complete', async (req: AuthRequest, res: Response) => {
     // Calculate average time per question
     const times = session.answers.map(a => a.timeSpent || 0);
     const averageTimePerQuestion = times.length > 0 ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0;
+    
     // Breakdown by difficulty
     // (Assume all flashcards have a difficulty field)
     const byDifficulty: any[] = [];
@@ -185,6 +186,7 @@ router.post('/:sessionId/complete', async (req: AuthRequest, res: Response) => {
       diffMap[diff].percentage = diffMap[diff].total > 0 ? Math.round((diffMap[diff].correct / diffMap[diff].total) * 100) : 0;
       byDifficulty.push({ difficulty: diff, ...diffMap[diff] });
     }
+
     // Breakdown by subject
     const bySubject: any[] = [];
     const subjMap: Record<string, { subject: string; correct: number; total: number; percentage: number }> = {};
@@ -199,6 +201,7 @@ router.post('/:sessionId/complete', async (req: AuthRequest, res: Response) => {
       subjMap[subj].percentage = subjMap[subj].total > 0 ? Math.round((subjMap[subj].correct / subjMap[subj].total) * 100) : 0;
       bySubject.push(subjMap[subj]);
     }
+
     // Create quiz result
     const result = await QuizResult.create({
       userId,

@@ -21,7 +21,6 @@ router.get('/', async (req: AuthRequest, res: Response) => {
         { subject: { $regex: search, $options: 'i' } }
       ];
     }
-    console.log("query: ",query)
     const cards = await Flashcard.find(query).sort({ createdAt: -1 }).lean();
     // console.log(cards)
     res.json(cards);
@@ -143,13 +142,13 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
   if (question !== undefined) updateData.question = question;
   if (answer !== undefined) updateData.answer = answer;
   if (difficulty !== undefined) updateData.difficulty = difficulty;
-    if (typeof options !== 'undefined') updateData.options = Array.isArray(options) ? options : [];
-    const updated = await Flashcard.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    );
-    res.json(updated);
+  if (typeof options !== 'undefined') updateData.options = Array.isArray(options) ? options : [];
+  const updated = await Flashcard.findByIdAndUpdate(
+    id,
+    { $set: updateData },
+    { new: true, runValidators: true }
+  );
+  res.json(updated);
   } catch (err) {
     console.error('PUT /flashcards/:id error:', err);
     res.status(500).json({ error: 'Failed to update flashcard' });

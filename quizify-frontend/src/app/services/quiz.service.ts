@@ -23,7 +23,7 @@ export class QuizService {
     return this.http.post(`${this.api}/${sessionId}/complete`, {});
   }
 
-  getResults(sessionId: string) {
-    return this.http.get(`${this.api}/${sessionId}/results`);
+  getResults(resultId: string) {
+    return this.http.get(`${this.api}/results/${resultId}`);
   }
 }
