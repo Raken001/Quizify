@@ -20,6 +20,17 @@ app.use(
   })
 );
 
+// for debugging
+app.use((req, _, next) => {
+  console.log('--------------------------------');
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers.authorization ? 'Token present' : 'No token');
+  console.log('Body:', req.body);
+  console.log('--------------------------------');
+  
+  next(); 
+});
+
 // Health check endpoint with detailed status
 app.get('/health', async (_req: Request, res: Response) => {
   const health = {
