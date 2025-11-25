@@ -23,7 +23,6 @@ app.use(
 // for debugging
 app.use((req, _, next) => {
   console.log('--------------------------------');
-  console.log(req.query)
   console.log(`Incoming Request: ${req.method} ${req.url}`);
   console.log('Headers:', req.headers.authorization ? 'Token present' : 'No token');
   console.log('Body:', req.body);
