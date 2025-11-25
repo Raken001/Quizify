@@ -239,34 +239,6 @@ router.post('/:sessionId/complete', async (req: AuthRequest, res: Response) => {
   }
 });
 
-// GET /quiz/history -> Get user's quiz history
-router.get('/history', async (req: AuthRequest, res: Response) => {
-  try {
-    const userId = req.user?.userId;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-    const results = await QuizResult.find({ userId })
-      .sort({ completedAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-    const total = await QuizResult.countDocuments({ userId });
-    res.json({
-      results,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
-  } catch (err) {
-    console.error('GET /quiz/history error:', err);
-    res.status(500).json({ error: 'Failed to fetch quiz history' });
-  }
-});
-
 // GET /quiz/results/:resultId -> Get detailed quiz results
 router.get('/results/:resultId', async (req: AuthRequest, res: Response) => {
   try {
