@@ -85,16 +85,30 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Secondary Link */
-a {
-  color: #666;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
   text-decoration: none;
-  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
+.btn:hover { background: #1259a7; }
 
-a:hover {
-  color: #333;
-  text-decoration: underline;
+.btn-outline {
+  background: transparent;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+.btn-outline:hover {
+  background: #eaf2ff;
 }
 
 /* Status Messages */
