@@ -41,7 +41,7 @@ export class AddQuestion implements OnInit {
     if (this.isEdit && this.editingId) {
       this.http.get<any>(`http://localhost:8000/flashcards/${this.editingId}`).subscribe({
         next: (q) => {
-          const optionsCsv = Array.isArray(q.tags) ? q.tags.join(', ') : '';
+          const optionsCsv = Array.isArray(q.options) ? q.options.join(', ') : '';
           this.form.patchValue({
             subject: q.subject || '',
             question: q.question || '',
@@ -72,20 +72,15 @@ export class AddQuestion implements OnInit {
     const { subject, question, optionsCsv, answer, difficulty } = this.form.value;
 
     // transform "a, b, c" -> ["a","b","c"] (only if options provided)
-    const tags = optionsCsv 
+    const options = optionsCsv
       ? String(optionsCsv)
           .split(',')
           .map((s: string) => s.trim())
           .filter((s: string) => s.length > 0)
       : [];
 
-    const payload = {
-      subject,
-      question,
-      answer,
-      difficulty,
-      tags
-    };
+    const payload: any = { subject, question, answer, difficulty };
+    if (options.length) payload.options = options;
 
     const req$ = this.isEdit && this.editingId
       ? this.http.put(`http://localhost:8000/flashcards/${this.editingId}`, payload)

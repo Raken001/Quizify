@@ -9,15 +9,11 @@ const router = Router();
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.userId;
-    const { subject, tags, difficulty, search } = req.query as FlashcardQuery;
+    const { subject, difficulty, search } = req.query as FlashcardQuery;
     
     // Build query
     const query: any = { userId };
     if (subject) query.subject = subject;
-    if (tags) {
-      const tagArray = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim());
-      query.tags = { $in: tagArray };
-    }
     if (difficulty) query.difficulty = difficulty;
     if (search) {
       query.$or = [
@@ -25,7 +21,9 @@ router.get('/', async (req: AuthRequest, res: Response) => {
         { subject: { $regex: search, $options: 'i' } }
       ];
     }
+    console.log("query: ",query)
     const cards = await Flashcard.find(query).sort({ createdAt: -1 }).lean();
+    // console.log(cards)
     res.json(cards);
   } catch (err) {
     console.error('GET /flashcards error:', err);
@@ -45,17 +43,7 @@ router.get('/subjects', async (req: AuthRequest, res: Response) => {
   }
 });
 
-// GET /flashcards/tags -> get unique tags for current user
-router.get('/tags', async (req: AuthRequest, res: Response) => {
-  try {
-    const userId = req.user?.userId;
-    const tags = await Flashcard.distinct('tags', { userId });
-    res.json(tags);
-  } catch (err) {
-    console.error('GET /flashcards/tags error:', err);
-    res.status(500).json({ error: 'Failed to fetch tags' });
-  }
-});
+// Note: tags endpoint removed — tags are no longer supported
 
 // GET /flashcards/:id -> get single flashcard
 router.get('/:id', async (req: AuthRequest, res: Response) => {
@@ -83,8 +71,15 @@ router.post('/', async (req: AuthRequest, res: Response) => {
     const subject = body.subject;
     const question = body.question;
     const answer = body.answer || body.correct_answer;
-    // tags or options as tags
-    const tags = Array.isArray(body.tags) ? body.tags : (Array.isArray(body.options) ? body.options : []);
+    // options support: body.options (array) or body.optionsCsv (comma-separated string)
+    let options: string[] = [];
+    if (Array.isArray(body.options)) options = body.options.map(String);
+    else if (body.optionsCsv) {
+      options = String(body.optionsCsv)
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 0);
+    }
     // difficulty string or numeric difficulty_level
     let difficulty = body.difficulty as any;
     if (!difficulty && body.difficulty_level !== undefined) {
@@ -101,8 +96,8 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       subject,
       question,
       answer,
-      difficulty: difficulty || 'medium',
-      tags: Array.isArray(tags) ? tags : []
+      options,
+      difficulty: difficulty || 'medium'
     });
     // Update user stats
     await User.findByIdAndUpdate(userId, { $inc: { 'stats.totalFlashcards': 1 } });
@@ -122,12 +117,20 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
     const question = body.question;
     const answer = body.answer || body.correct_answer;
     const subject = body.subject;
+    // options support for update
+    let options: string[] | undefined = undefined;
+    if (Array.isArray(body.options)) options = body.options.map(String);
+    else if (body.optionsCsv !== undefined) {
+      options = String(body.optionsCsv)
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 0);
+    }
     let difficulty = body.difficulty as any;
     if (!difficulty && body.difficulty_level !== undefined) {
       const lvl = Number(body.difficulty_level);
       difficulty = lvl === 1 ? 'easy' : lvl === 2 ? 'medium' : lvl === 3 ? 'hard' : 'medium';
     }
-    const tags = Array.isArray(body.tags) ? body.tags : (Array.isArray(body.options) ? body.options : undefined);
     // Verify ownership
     const existing = await Flashcard.findOne({ _id: id, userId });
     if (!existing) {
@@ -140,7 +143,7 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
   if (question !== undefined) updateData.question = question;
   if (answer !== undefined) updateData.answer = answer;
   if (difficulty !== undefined) updateData.difficulty = difficulty;
-  if (tags !== undefined) updateData.tags = Array.isArray(tags) ? tags : [];
+    if (typeof options !== 'undefined') updateData.options = Array.isArray(options) ? options : [];
     const updated = await Flashcard.findByIdAndUpdate(
       id,
       { $set: updateData },

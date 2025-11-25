@@ -173,9 +173,7 @@ export class Quiz implements OnInit {
 
   getOptions(): string[] {
     if (!this.currentQuestion) return [];
-    const opts = Array.isArray(this.currentQuestion.options)
-      ? this.currentQuestion.options
-      : (Array.isArray(this.currentQuestion.tags) ? this.currentQuestion.tags : []);
+    const opts = Array.isArray(this.currentQuestion.options) ? this.currentQuestion.options : [];
     // Ensure string array
     return (opts || []).map((o: any) => String(o));
   }

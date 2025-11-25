@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 export class Flashcards {
   loading = true;
   error: string | null = null;
-  data: Array<{ _id?:string; id?:string; subject:string; question:string; answer:string; tags?:string[] }> = [];
+  data: Array<{ _id?:string; id?:string; subject:string; question:string; answer:string; options?:string[] }> = [];
 
   index = 0;
   showAnswer = false;
@@ -46,9 +46,9 @@ export class Flashcards {
           id: r.id,
           subject: r.subject,
           question: r.question,
-          // Support both old (answer/tags) and bulk import fields (correct_answer/options)
+          // Prefer canonical `answer` field
           answer: r.answer || r.correct_answer,
-          tags: (r.tags && Array.isArray(r.tags) ? r.tags : (Array.isArray(r.options) ? r.options : []))
+          options: Array.isArray(r.options) ? r.options : []
         }));
         this.loading = false;
         this.index = 0;

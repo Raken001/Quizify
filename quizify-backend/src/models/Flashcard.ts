@@ -7,7 +7,7 @@ export interface IFlashcard extends Document {
   answer: string;
   subject: string;
   difficulty: 'easy' | 'medium' | 'hard';
-  tags: string[];
+  options: string[];
   statistics: {
     timesAnswered: number;
     timesCorrect: number;
@@ -35,6 +35,10 @@ const flashcardSchema = new Schema<IFlashcard>(
       required: true,
       trim: true
     },
+    options: {
+      type: [String],
+      default: []
+    },
     subject: {
       type: String,
       required: true,
@@ -45,11 +49,6 @@ const flashcardSchema = new Schema<IFlashcard>(
       type: String,
       enum: ['easy', 'medium', 'hard'],
       default: 'medium',
-      index: true
-    },
-    tags: {
-      type: [String],
-      default: [],
       index: true
     },
     statistics: {
@@ -66,7 +65,6 @@ const flashcardSchema = new Schema<IFlashcard>(
 // Create compound indexes for common queries
 flashcardSchema.index({ userId: 1, subject: 1 });
 flashcardSchema.index({ userId: 1, difficulty: 1 });
-flashcardSchema.index({ userId: 1, tags: 1 });
 flashcardSchema.index({ userId: 1, createdAt: -1 });
 
 // Text index for search functionality

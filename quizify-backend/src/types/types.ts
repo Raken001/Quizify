@@ -13,7 +13,6 @@ export interface AuthRequest extends Request {
 export interface FlashcardQuery {
   subject?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
-  tags?: string | string[];
   search?: string;
   page?: string;
   limit?: string;
@@ -77,8 +76,8 @@ export interface FlashcardBody {
   question: string;
   answer: string;
   subject: string;
+  options?: string[];
   difficulty?: 'easy' | 'medium' | 'hard';
-  tags?: string[];
 }
 
 // Admin query parameters for user list

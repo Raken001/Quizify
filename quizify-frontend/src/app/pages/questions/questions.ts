@@ -24,6 +24,7 @@ export class Questions {
 
     this.http.get<any[]>('http://localhost:8000/flashcards').subscribe({
       next: (rows) => {
+        // Do not rely on tags; keep row as-is
         this.data = rows;
         this.loading = false;
       },

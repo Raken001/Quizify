@@ -17,7 +17,6 @@
           <th>Question</th>
           <th>Answer</th>
           <th>Options</th>
-          <th>Tags</th>
           <th>Difficulty</th>
           <th>Actions</th>
         </tr>
@@ -29,7 +28,6 @@
             <td>{{ q.question }}</td>
             <td>{{ q.answer || q.correct_answer }}</td>
             <td>{{ q.options?.length ? q.options.join(', ') : '-' }}</td>
-            <td>{{ q.tags?.length ? q.tags.join(', ') : '-' }}</td>
             <td>{{ difficultyLabel(q) }}</td>
             <td>
               <div class="actions">
