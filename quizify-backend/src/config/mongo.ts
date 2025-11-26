@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-const DEFAULT_URI = 'mongodb://127.0.0.1:27017/quizify';
 
 /**
  * Connect to MongoDB
@@ -8,7 +7,7 @@ const DEFAULT_URI = 'mongodb://127.0.0.1:27017/quizify';
  */
 export async function connectMongo(): Promise<mongoose.Connection> {
   // Support both MONGO_URI and MONGODB_URI for flexibility
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI || DEFAULT_URI;
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI || "" 
 
   if (mongoose.connection.readyState === 1) {
     // already connected

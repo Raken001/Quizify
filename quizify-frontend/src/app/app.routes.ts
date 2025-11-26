@@ -7,8 +7,10 @@ import { Flashcards } from './pages/flashcards/flashcards';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
 import { AuthGuard } from './services/auth.guard';
+import { AdminGuard } from './services/admin.guard';
 import { Quiz } from './pages/quiz/quiz';
 import { Admin } from './pages/admin/admin';
+import { SystemStats } from './pages/system-stats/system-stats';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -19,7 +21,8 @@ export const routes: Routes = [
   { path: 'questions/edit/:id', component: AddQuestion, canActivate: [AuthGuard] },
   { path: 'flashcards', component: Flashcards, canActivate: [AuthGuard] },
   { path: 'quiz', component: Quiz, canActivate: [AuthGuard] },
-  { path: 'admin', component: Admin, canActivate: [AuthGuard] },
+  { path: 'admin', component: Admin, canActivate: [AdminGuard] },
+  { path: 'systemstats', component: SystemStats, canActivate: [AdminGuard]},
   { path: '', component: Flashcards, canActivate: [AuthGuard]  },
   { path: '**', redirectTo: 'login' }
 ];

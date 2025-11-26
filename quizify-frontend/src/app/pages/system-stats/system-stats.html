@@ -1,0 +1,61 @@
+<div class="system-stats-container">
+  <h1>System Statistics</h1>
+
+  @if (loading) {
+    <div class="loading">Loading statistics...</div>
+  } @else if (error) {
+    <div class="error">{{ error }}</div>
+  } @else {
+    <!-- Overall Stats -->
+    <section class="stats-section overall-stats">
+      <h2>Overall Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value">{{ overallStats?.totalUsers || 0 }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Flashcards</div>
+          <div class="stat-value">{{ overallStats?.totalFlashcards || 0 }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Quizzes</div>
+          <div class="stat-value">{{ overallStats?.totalQuizzes || 0 }}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Today's Stats -->
+    @if (todayStats) {
+      <section class="stats-section today-stats">
+        <h2>Today's Activity</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Active Users</div>
+            <div class="stat-value">{{ todayStats.activeUsers }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">New Users Today</div>
+            <div class="stat-value">{{ todayStats.newUsers }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Completed Quizzes</div>
+            <div class="stat-value">{{ todayStats.completedQuizzes }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average Quiz Score</div>
+            <div class="stat-value">{{ todayStats.averageQuizScore }}%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">New Flashcards</div>
+            <div class="stat-value">{{ todayStats.newFlashcards }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Study Time</div>
+            <div class="stat-value">{{ formatStudyTime(todayStats.totalStudyTime) }}</div>
+          </div>
+        </div>
+      </section>
+    }
+  }
+</div>

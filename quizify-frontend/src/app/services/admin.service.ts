@@ -7,6 +7,10 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
+  getStats() {
+    return this.http.get(`${this.api}/stats`);
+  }
+
   getUsers() {
     return this.http.get(`${this.api}/users`);
   }

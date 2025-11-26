@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import Flashcard from '../models/Flashcard.js';
 import QuizResult from '../models/QuizResult.js';
 import SystemStats from '../models/SystemStats.js';
+import QuizSession from '../models/QuizSession.js';
 import { AuthRequest } from '../types/types.js';
 import { requireAdmin } from '../middleware/auth.middleware.js';
 
@@ -25,6 +26,13 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
       const completedQuizzes = await QuizResult.countDocuments({ completedAt: { $gte: today } });
       const results = await QuizResult.find({ completedAt: { $gte: today } }).select('summary.score').lean();
       const averageQuizScore = results.length > 0 ? Math.round(results.reduce((sum, r) => sum + (r.summary.score || 0), 0) / results.length) : 0;
+      
+      // Calculate total study time from quiz sessions for today
+      const quizSessions = await QuizSession.find({ createdAt: { $gte: today }, status: 'completed' })
+        .select('totalTime')
+        .lean();
+      const totalStudyTime = quizSessions.reduce((sum: number, session: any) => sum + (session.totalTime || 0), 0);
+      
       stats = await SystemStats.create({
         date: today,
         stats: {
@@ -36,7 +44,7 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
           totalQuizzes: await QuizResult.countDocuments(),
           completedQuizzes,
           averageQuizScore,
-          totalStudyTime: 0 // Not tracked in this example
+          totalStudyTime
         }
       });
     }

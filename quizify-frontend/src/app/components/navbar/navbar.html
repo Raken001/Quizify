@@ -1,6 +1,10 @@
 <nav class="navbar">
   <a routerLink="/" class="logo">Quizify</a>
   <ul class="nav-links">
+    @if(user && user.role === 'admin'){
+      <li><a routerLink="/systemstats">Stats</a></li>
+      <li><a routerLink="/admin">Users</a></li>
+    }
     <li><a routerLink="/flashcards">Flashcards</a></li>
     <li><a routerLink="/questions">Questions</a></li>
     <li><a routerLink="/quiz">Take Quiz</a></li>

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
+import { SystemStats } from '../system-stats/system-stats';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SystemStats],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
