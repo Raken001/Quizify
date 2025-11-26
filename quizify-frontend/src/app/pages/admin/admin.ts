@@ -6,7 +6,7 @@ import { SystemStats } from '../system-stats/system-stats';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, SystemStats],
+  imports: [CommonModule],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
