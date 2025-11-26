@@ -2,8 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { QuizService } from '../../services/quiz.service';
-import { HttpClient } from '@angular/common/http';
 
+/**
+ * Quiz Component
+ * Manages the quiz taking experience
+ * Handles quiz initialization, question navigation, answer submission, and results display
+ */
 @Component({
   selector: 'app-quiz',
   standalone: true,
@@ -27,32 +31,49 @@ export class Quiz implements OnInit {
   quizComplete = false;
   selectedOption: string | null = null;
 
-  constructor(private quizService: QuizService, private fb: FormBuilder, private http: HttpClient) {
+  constructor(private quizService: QuizService, private fb: FormBuilder) {
     this.form = this.fb.group({
       answer: ['']
     });
   }
 
-  ngOnInit() {
-    // Load subjects for selection
-    this.http.get<string[]>('http://localhost:8000/flashcards/subjects').subscribe({
-      next: (subs) => this.subjects = subs || [],
+  /**
+   * Initialize component - load available subjects
+   */
+  ngOnInit(): void {
+    this.loadSubjects();
+  }
+
+  /**
+   * Loads all available subjects for quiz filtering
+   * Non-blocking operation - errors are ignored
+   */
+  private loadSubjects(): void {
+    this.quizService.getSubjects().subscribe({
+      next: (subs: any) => this.subjects = subs || [],
       error: () => {/* non-blocking */}
     });
   }
 
-  start() {
+  /**
+   * Starts a new quiz session with selected subject
+   * Initializes the first question and prepares quiz interface
+   */
+  start(): void {
     if (!this.selectedSubject) {
       this.error = 'Please select a subject first';
       return;
     }
+    
     this.loading = true;
     this.error = '';
     this.quizComplete = false;
+    
     const options: any = { count: 10, randomOrder: true };
     if (this.selectedSubject && this.selectedSubject !== 'all') {
       options.subject = this.selectedSubject;
     }
+
     this.quizService.start(options).subscribe({
       next: (data: any) => {
         this.sessionId = data.sessionId;
@@ -71,8 +92,14 @@ export class Quiz implements OnInit {
     });
   }
 
-  submit() {
+  /**
+   * Submits the current question's answer
+   * Handles both multiple choice and text answers
+   * Moves to next question or completes quiz if no more questions
+   */
+  submit(): void {
     if (!this.sessionId || !this.currentQuestion) return;
+    
     // Prefer multiple-choice selection when options are present
     const isMCQ = this.getOptions().length > 0;
     const answer = isMCQ ? this.selectedOption : this.form.value.answer;
@@ -101,8 +128,14 @@ export class Quiz implements OnInit {
     });
   }
 
-  getNextQuestion() {
+  /**
+   * Retrieves the next unanswered question from the current session
+   * Resets form and selected option for new question
+   * Completes quiz if no more questions available
+   */
+  private getNextQuestion(): void {
     if (!this.sessionId) return;
+    
     this.quizService.getSession(this.sessionId).subscribe({
       next: (session: any) => {
         // Get the next unanswered question
@@ -130,8 +163,13 @@ export class Quiz implements OnInit {
     });
   }
 
-  completeQuiz() {
+  /**
+   * Completes the current quiz session and retrieves final results
+   * Called when all questions have been answered
+   */
+  private completeQuiz(): void {
     if (!this.sessionId) return;
+    
     this.quizService.completeQuiz(this.sessionId).subscribe({
       next: (results: any) => {
         this.result = results;
@@ -144,8 +182,13 @@ export class Quiz implements OnInit {
     });
   }
 
-  viewResults() {
+  /**
+   * Retrieves detailed results for the completed quiz
+   * Called when user clicks to view detailed results
+   */
+  viewResults(): void {
     if (!this.sessionId) return;
+    
     this.loading = true;
     this.quizService.getResults(this.sessionId).subscribe({
       next: (data: any) => {
@@ -159,7 +202,10 @@ export class Quiz implements OnInit {
     });
   }
 
-  restartQuiz() {
+  /**
+   * Resets quiz state to initial state for starting a new quiz
+   */
+  restartQuiz(): void {
     this.sessionId = null;
     this.currentQuestion = null;
     this.currentQuestionIndex = 0;
@@ -171,6 +217,11 @@ export class Quiz implements OnInit {
     this.selectedSubject = '';
   }
 
+  /**
+   * Extracts options from current question
+   * Returns empty array if question doesn't have multiple choice options
+   * @returns Array of option strings
+   */
   getOptions(): string[] {
     if (!this.currentQuestion) return [];
     const opts = Array.isArray(this.currentQuestion.options) ? this.currentQuestion.options : [];

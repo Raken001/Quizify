@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { UserService } from '../../services/user.service';
 
+/**
+ * Navbar Component
+ * Displays navigation links and user information
+ * Shows admin links only for users with admin role
+ */
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -16,10 +21,26 @@ export class Navbar implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(public auth: AuthService, private router: Router, private http: HttpClient) {}
+  constructor(
+    public auth: AuthService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
+  /**
+   * Initialize component - load user profile on component creation
+   */
   ngOnInit(): void {
-    this.http.get('http://localhost:8000/users/profile').subscribe({
+    this.loadUserProfile();
+  }
+
+  /**
+   * Loads the current user's profile information
+   * Sets user role, name, and stats for display in navbar
+   * Handles loading and error states
+   */
+  private loadUserProfile(): void {
+    this.userService.getProfile().subscribe({
       next: (data: any) => {
         this.user = {
           email: data.email,
@@ -37,7 +58,11 @@ export class Navbar implements OnInit {
     });
   }
 
-  logout() {
+  /**
+   * Logs out the current user
+   * Clears authentication state and redirects to login
+   */
+  logout(): void {
     this.auth.logout();
   }
 }

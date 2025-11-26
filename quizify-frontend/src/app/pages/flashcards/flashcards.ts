@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { FlashcardService } from '../../services/flashcard.service';
 
+/**
+ * Flashcards Component
+ * Displays flashcards in a study mode with flip functionality
+ * Allows filtering by subject and navigation between cards
+ */
 @Component({
   selector: 'app-flashcards',
   standalone: true,
@@ -11,37 +16,54 @@ import { RouterModule } from '@angular/router';
   templateUrl: './flashcards.html',
   styleUrl: './flashcards.css'
 })
-export class Flashcards {
+export class Flashcards implements OnInit {
   loading = true;
   error: string | null = null;
-  data: Array<{ _id?:string; id?:string; subject:string; question:string; answer:string; options?:string[] }> = [];
+  data: Array<{ _id?: string; id?: string; subject: string; question: string; answer: string; options?: string[] }> = [];
 
   index = 0;
   showAnswer = false;
   subjects: string[] = [];
   selectedSubject: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private flashcardService: FlashcardService) {}
 
-  ngOnInit() {
-    // Load subjects for filter dropdown
-    this.http.get<string[]>('http://localhost:8000/flashcards/subjects').subscribe({
-      next: (subs) => this.subjects = subs || [],
-      error: () => {/* non-blocking */}
-    });
+  /**
+   * Initialize component - load subjects and initial flashcards
+   */
+  ngOnInit(): void {
+    this.loadSubjects();
     this.loadCards();
   }
 
-  loadCards() {
+  /**
+   * Loads all available subjects for filtering
+   * Non-blocking operation - errors are ignored
+   */
+  private loadSubjects(): void {
+    this.flashcardService.getSubjects().subscribe({
+      next: (subs: any) => this.subjects = subs || [],
+      error: () => {/* non-blocking */}
+    });
+  }
+
+  /**
+   * Loads flashcards based on selected subject filter
+   * If no subject selected, loads all flashcards
+   * Resets card index and answer visibility on load
+   */
+  loadCards(): void {
     this.loading = true;
     this.error = null;
-    const url = this.selectedSubject
-      ? `http://localhost:8000/flashcards?subject=${encodeURIComponent(this.selectedSubject)}`
-      : `http://localhost:8000/flashcards`;
-    this.http.get<any[]>(url).subscribe({
-      next: (rows) => {
-        // keep only fields we need for cards
-        this.data = rows.map(r => ({
+
+    const loadRequest$ = this.selectedSubject
+      ? this.flashcardService.getBySubject(this.selectedSubject)
+      : this.flashcardService.getAll();
+
+    loadRequest$.subscribe({
+      next: (rows: any) => {
+        // Transform and keep only fields needed for study cards
+        this.data = rows.map((r: any) => ({
           _id: r._id,
           id: r.id,
           subject: r.subject,
@@ -61,15 +83,28 @@ export class Flashcards {
     });
   }
 
-  flip() { this.showAnswer = !this.showAnswer; }
+  /**
+   * Toggles the visibility of the current card's answer
+   */
+  flip(): void {
+    this.showAnswer = !this.showAnswer;
+  }
 
-  next() {
+  /**
+   * Moves to the next flashcard in the list
+   * Wraps around to the beginning if at the end
+   */
+  next(): void {
     if (!this.data.length) return;
     this.index = (this.index + 1) % this.data.length;
     this.showAnswer = false;
   }
 
-  prev() {
+  /**
+   * Moves to the previous flashcard in the list
+   * Wraps around to the end if at the beginning
+   */
+  prev(): void {
     if (!this.data.length) return;
     this.index = (this.index - 1 + this.data.length) % this.data.length;
     this.showAnswer = false;
