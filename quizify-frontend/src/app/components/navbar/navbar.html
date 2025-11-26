@@ -1,7 +1,7 @@
 <nav class="navbar">
   <a routerLink="/" class="logo">Quizify</a>
   <ul class="nav-links">
-    @if(user && user.role === 'admin'){
+    @if(user && user.role === 'admin' && !loading){
       <li><a routerLink="/systemstats">Stats</a></li>
       <li><a routerLink="/admin">Users</a></li>
     }
