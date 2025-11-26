@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Navbar Component
+ * 
  * Displays navigation links and user information
  * Shows admin links only for users with admin role
+ * Automatically reloads user data when authentication state changes
  */
 @Component({
   selector: 'app-navbar',
@@ -16,10 +20,13 @@ import { UserService } from '../../services/user.service';
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
-export class Navbar implements OnInit {
+export class Navbar implements OnInit, OnDestroy {
   user: any = null;
   loading = true;
   error: string | null = null;
+  
+  // Subject to unsubscribe from observables on component destroy
+  private destroy$ = new Subject<void>();
 
   constructor(
     public auth: AuthService,
@@ -28,10 +35,27 @@ export class Navbar implements OnInit {
   ) {}
 
   /**
-   * Initialize component - load user profile on component creation
+   * Initialize component
+   * Loads user profile on creation
+   * Subscribes to auth state changes to reload profile when user logs in/out
    */
   ngOnInit(): void {
     this.loadUserProfile();
+    
+    // Listen for authentication state changes (login/logout)
+    // Whenever user logs in or out, reload the navbar user profile
+    this.auth.authStateChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isLoggedIn: boolean) => {
+        if (isLoggedIn) {
+          // User logged in - reload profile to get new user's data
+          this.loadUserProfile();
+        } else {
+          // User logged out - clear the navbar user data
+          this.user = null;
+          this.loading = false;
+        }
+      });
   }
 
   /**
@@ -40,22 +64,25 @@ export class Navbar implements OnInit {
    * Handles loading and error states
    */
   private loadUserProfile(): void {
-    this.userService.getProfile().subscribe({
-      next: (data: any) => {
-        this.user = {
-          email: data.email,
-          firstName: data.profile?.firstName || '-',
-          lastName: data.profile?.lastName || '-',
-          role: data.role || 'user',
-          stats: data.stats
-        };
-        this.loading = false;
-      },
-      error: (err: any) => {
-        this.error = err?.error?.error || 'Failed to load profile';
-        this.loading = false;
-      }
-    });
+    this.loading = true;
+    this.userService.getProfile()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: any) => {
+          this.user = {
+            email: data.email,
+            firstName: data.profile?.firstName || '-',
+            lastName: data.profile?.lastName || '-',
+            role: data.role || 'user',
+            stats: data.stats
+          };
+          this.loading = false;
+        },
+        error: (err: any) => {
+          this.error = err?.error?.error || 'Failed to load profile';
+          this.loading = false;
+        }
+      });
   }
 
   /**
@@ -64,5 +91,14 @@ export class Navbar implements OnInit {
    */
   logout(): void {
     this.auth.logout();
+  }
+
+  /**
+   * Clean up subscriptions when component is destroyed
+   * Prevents memory leaks from Observable subscriptions
+   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
