@@ -1,5 +1,5 @@
-<div class="system-stats-container">
-  <h1>System Statistics</h1>
+<div class="stats-container">
+  <h2>System Statistics</h2>
 
   @if (loading) {
     <div class="loading">Loading statistics...</div>
@@ -7,53 +7,61 @@
     <div class="error">{{ error }}</div>
   } @else {
     <!-- Overall Stats -->
-    <section class="stats-section overall-stats">
-      <h2>Overall Statistics</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Users</div>
-          <div class="stat-value">{{ overallStats?.totalUsers || 0 }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Flashcards</div>
-          <div class="stat-value">{{ overallStats?.totalFlashcards || 0 }}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Quizzes</div>
-          <div class="stat-value">{{ overallStats?.totalQuizzes || 0 }}</div>
-        </div>
+    <section class="stats-section">
+      <h3>Overall Statistics</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>Total Users</td>
+              <td>{{ overallStats?.totalUsers || 0 }}</td>
+            </tr>
+            <tr>
+              <td>Total Flashcards</td>
+              <td>{{ overallStats?.totalFlashcards || 0 }}</td>
+            </tr>
+            <tr>
+              <td>Total Quizzes</td>
+              <td>{{ overallStats?.totalQuizzes || 0 }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
     <!-- Today's Stats -->
     @if (todayStats) {
-      <section class="stats-section today-stats">
-        <h2>Today's Activity</h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Active Users</div>
-            <div class="stat-value">{{ todayStats.activeUsers }}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">New Users Today</div>
-            <div class="stat-value">{{ todayStats.newUsers }}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Completed Quizzes</div>
-            <div class="stat-value">{{ todayStats.completedQuizzes }}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Average Quiz Score</div>
-            <div class="stat-value">{{ todayStats.averageQuizScore }}%</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">New Flashcards</div>
-            <div class="stat-value">{{ todayStats.newFlashcards }}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Study Time</div>
-            <div class="stat-value">{{ formatStudyTime(todayStats.totalStudyTime) }}</div>
-          </div>
+      <section class="stats-section">
+        <h3>Today's Activity</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>Active Users</td>
+                <td>{{ todayStats.activeUsers }}</td>
+              </tr>
+              <tr>
+                <td>New Users Today</td>
+                <td>{{ todayStats.newUsers }}</td>
+              </tr>
+              <tr>
+                <td>Completed Quizzes</td>
+                <td>{{ todayStats.completedQuizzes }}</td>
+              </tr>
+              <tr>
+                <td>Average Quiz Score</td>
+                <td>{{ todayStats.averageQuizScore }}%</td>
+              </tr>
+              <tr>
+                <td>New Flashcards</td>
+                <td>{{ todayStats.newFlashcards }}</td>
+              </tr>
+              <tr>
+                <td>Total Study Time</td>
+                <td>{{ formatStudyTime(todayStats.totalStudyTime) }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     }

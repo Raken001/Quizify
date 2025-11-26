@@ -17,6 +17,7 @@
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Flashcards</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
@@ -27,6 +28,7 @@
               <td>{{ user.email }}</td>
               <td>{{ user.profile?.firstName || '-' }}</td>
               <td>{{ user.profile?.lastName || '-' }}</td>
+              <td>{{ user.stats?.totalFlashcards || 0 }}</td>
               <td>{{ user.role }}</td>
               <td>
                 <button (click)="deleteUser(user._id)">Delete</button>
