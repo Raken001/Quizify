@@ -4,6 +4,14 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
+/**
+ * Registration Component
+ * 
+ * Handles user account creation with email, password, and optional name fields
+ * Validates form input and communicates with backend registration service
+ * Redirects to login page on successful registration
+ * Manages loading and error states during the registration process
+ */
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -25,6 +33,11 @@ export class Register {
     });
   }
 
+  /**
+   * Submits registration form to authentication service
+   * Validates form before submission and manages loading state
+   * Redirects to login page on success, displays error on failure
+   */
   async register() {
     this.error = '';
     this.loading = true;

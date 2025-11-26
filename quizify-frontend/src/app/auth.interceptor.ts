@@ -4,6 +4,18 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
+/**
+ * HTTP Authentication Interceptor
+ * 
+ * Automatically injects JWT token into all outgoing HTTP requests
+ * Handles 401 Unauthorized responses by logging out user and redirecting to login
+ * 
+ * Features:
+ * - Adds Authorization Bearer token to request headers
+ * - Handles both browser and server-side rendering contexts
+ * - Auto-logout on token expiration (401 response)
+ * - Extracts error messages from server response
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const auth = inject(AuthService);

@@ -4,6 +4,14 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
+/**
+ * User Profile Component
+ * 
+ * Displays the current user's profile information
+ * Shows email, name, role, and user statistics
+ * Requires authentication to access
+ * Provides logout functionality
+ */
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -22,6 +30,10 @@ export class Profile implements OnInit {
     private http: HttpClient
   ) {}
 
+  /**
+   * Initialize component - verify authentication and load user profile
+   * Redirects to login if not authenticated
+   */
   ngOnInit() {
     const token = this.auth.getToken();
     if (!token) {
@@ -48,6 +60,9 @@ export class Profile implements OnInit {
     });
   }
 
+  /**
+   * Logs out the current user and redirects to login page
+   */
   logout() {
     this.auth.logout();
   }

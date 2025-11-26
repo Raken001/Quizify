@@ -5,6 +5,17 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Navbar } from './components/navbar/navbar';
 
+/**
+ * Root Application Component
+ * 
+ * Main container that wraps all routes and the navbar
+ * Handles backend health checks on initialization
+ * 
+ * Imports:
+ * - RouterOutlet: Renders routed components
+ * - Navbar: Global navigation component
+ * - HttpClient: For API communication
+ */
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, CommonModule, Navbar],
@@ -16,19 +27,24 @@ export class App {
 
   health: unknown = null;
 
-  // ADD THIS FIELD
+  // Field to store current user data (used for testing)
   me: unknown = null;
 
-  // INJECT HTTP CLIENT
   constructor(private http: HttpClient) {}
 
-  // FETCH BACKEND HEALTH ON LOAD
+  /**
+   * Initialize app on load
+   * Checks backend health status to verify API connectivity
+   */
   ngOnInit() {
     this.http.get('http://localhost:8000/health')
       .subscribe(res => this.health = res);
   }
 
-  // ⬇DD THIS METHOD (used by the button in app.html)
+  /**
+   * Fetches current user information from backend
+   * Used for testing/debugging authentication and user data
+   */
   fetchMe() {
     this.http.get('http://localhost:8000/me').subscribe({
       next: res => this.me = res,

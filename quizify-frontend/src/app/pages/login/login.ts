@@ -7,6 +7,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
+/**
+ * Login Component
+ * 
+ * Handles user authentication with email and password credentials
+ * Validates form input and communicates with backend authentication service
+ * Redirects to flashcards page on successful login
+ * Displays error messages for failed authentication attempts
+ */
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -29,6 +37,11 @@ export class Login {
     });
   }
 
+  /**
+   * Submits login credentials to authentication service
+   * Validates form before submission
+   * Navigates to flashcards on success, displays error on failure
+   */
   async onSubmit() {
     if (this.form.invalid) return;
     const { email, password } = this.form.value;
