@@ -1,23 +1,29 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Enter your email" required />
+      @if (form.controls['email'].invalid && form.controls['email'].touched) {
+        <small *ngIf="form.controls['email'].errors?.['required']">Email is required.</small>
+        <small *ngIf="form.controls['email'].errors?.['email']">Enter a valid email.</small>
+      }
+    </div>
 
-<h2>Login</h2>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="Enter your password" required />
+      @if (form.controls['password'].invalid && form.controls['password'].touched) {
+        <small *ngIf="form.controls['password'].errors?.['required']">Password is required.</small>
+      }
+    </div>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <label for="email">Email:</label>
-  <input id="email" type="email" formControlName="email" required />
-  @if (form.controls['email'].invalid && form.controls['email'].touched) {
-    <small *ngIf="form.controls['email'].errors?.['required']">Email is required.</small>
-    <small *ngIf="form.controls['email'].errors?.['email']">Enter a valid email.</small>
+    <button type="submit" [disabled]="form.invalid">Login</button>
+  </form>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
   }
 
-  <label for="password">Password:</label>
-  <input id="password" type="password" formControlName="password" required />
-  @if (form.controls['password'].invalid && form.controls['password'].touched) {
-    <small *ngIf="form.controls['password'].errors?.['required']">Password is required.</small>
-  }
-
-  <button type="submit" [disabled]="form.invalid">Login</button>
-</form>
-
-@if (error) {
-  <p style="color: red">{{ error }}</p>
-}
+  <p class="signup-link">Don't have an account? <a routerLink="/register">Sign up here</a></p>
+</div>
