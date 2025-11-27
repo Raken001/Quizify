@@ -1,22 +1,28 @@
 <nav class="navbar">
-  <a routerLink="/" class="logo">Quizify</a>
-  <ul class="nav-links">
-    @if(user && user.role === 'admin' && !loading){
-      <li><a routerLink="/systemstats">Stats</a></li>
-      <li><a routerLink="/admin">Users</a></li>
-    }
-    <li><a routerLink="/flashcards">Flashcards</a></li>
-    <li><a routerLink="/questions">Questions</a></li>
-    <li><a routerLink="/quiz">Take Quiz</a></li>
-    @if (auth.isLoggedIn()) {
-      <li><a routerLink="/profile">Profile</a></li>
-    }
-    @if (!auth.isLoggedIn()) {
-      <li><a routerLink="/login">Login</a></li>
-      <li><a routerLink="/register">Register</a></li>
-    }
-    @if (auth.isLoggedIn()) {
-      <li><a (click)="logout()">Logout</a></li>
-    }
-  </ul>
+  <div class="navbar-container">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">📚</span>
+      <span class="logo-text">Quizify</span>
+    </a>
+    
+    <ul class="nav-links">
+      @if(user && user.role === 'admin' && !loading){
+        <li><a routerLink="/systemstats" class="nav-link">Stats</a></li>
+        <li><a routerLink="/admin" class="nav-link">Users</a></li>
+      }
+      <li><a routerLink="/flashcards" class="nav-link">Flashcards</a></li>
+      <li><a routerLink="/questions" class="nav-link">Questions</a></li>
+      <li><a routerLink="/quiz" class="nav-link">Quiz</a></li>
+      @if (auth.isLoggedIn()) {
+        <li><a routerLink="/profile" class="nav-link">Profile</a></li>
+      }
+      @if (!auth.isLoggedIn()) {
+        <li><a routerLink="/login" class="nav-link">Login</a></li>
+        <li><a routerLink="/register" class="nav-link">Register</a></li>
+      }
+      @if (auth.isLoggedIn()) {
+        <li><a (click)="logout()" class="nav-link logout-btn">Logout</a></li>
+      }
+    </ul>
+  </div>
 </nav>

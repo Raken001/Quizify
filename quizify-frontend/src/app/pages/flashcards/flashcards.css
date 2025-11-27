@@ -1,55 +1,359 @@
-.header{
-  padding: 0rem 2rem;
+/* Flashcards Page Structure */
+.flashcards-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem 1rem;
 }
 
-.flashcards-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-.flashcards-container h2 {
-  margin-bottom: 1.5rem;
-}
-.flashcards-container form {
+/* Header Section */
+.flashcards-header {
+  max-width: 800px;
+  margin: 0 auto 2rem;
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
-.flashcard-list {
-  list-style: none;
-  padding: 0;
+
+.header-content h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  letter-spacing: -0.5px;
 }
-.flashcard {
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Filter Section */
+.filter-section {
   display: flex;
   align-items: center;
-  background: transparent; /* removes gray background */
-  box-shadow: none; /* remove shadow behind buttons */
-  gap: 12px; /* closer spacing between buttons */
-  margin-top: 16px;
+  gap: 0.75rem;
 }
 
-.flashcard .question,
-.flashcard .answer {
-  margin-right: 1.5rem;
+.filter-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4a5568;
 }
-.flashcard button {
-  background: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.7rem 1.4rem;  /* bigger buttons */
-  font-size: 1rem;
+
+.subject-select {
+  padding: 0.65rem 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.95rem;
+  color: #2d3748;
   cursor: pointer;
-  transition: background 0.2s ease;
-}
-.flashcard button:hover {
-  background: #1259a7;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  min-width: 180px;
 }
 
-.error {
-  color: #d32f2f;
+.subject-select:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.subject-select:focus {
+  outline: none;
+  border-color: #e2e8f0;
+  box-shadow: none;
+}
+
+/* Main Container */
+.flashcards-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading & Error States */
+.loading-state, .error-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #718096;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.error-icon, .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.error-text { color: #c53030; }
+.empty-state p:first-of-type { font-size: 1.2rem; font-weight: 600; color: #4a5568; }
+
+
+/* Study Area */
+.flashcards-study-area {
+  width: 100%;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* Ensure the area itself is centered if content is short */
+  justify-content: center; 
+  min-height: 100%;
+}
+
+/* Progress Info */
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
+}
+
+.progress-text {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.progress-text .current { font-size: 1.5rem; color: #4299e1; }
+.progress-text .divider { color: #cbd5e0; }
+.progress-text .total { color: #a0aec0; }
+
+.subject-tag {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* --- NEW ANIMATION CORE --- */
+
+/* Card Wrapper */
+.card-wrapper {
+  width: 100%;
+  /* Ensure wrapper doesn't collapse */
+  display: flex; 
+  justify-content: center;
+}
+
+/* The Flashcard Item (Parent) */
+.flashcard-item {
+  min-height: 320px;
+  width: 100%;
+  
+  /* Grid stacks items perfectly centered */
+  display: grid;
+  grid-template-areas: "stack";
+  place-items: center; 
+  
+  position: relative;
+  transition: none;
+  
+  /* Styling */
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.25);
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden; /* Keeps scaled content inside rounded corners */
+}
+
+/* Active State change background subtly */
+.flashcard-item.show-answer {
+   background: linear-gradient(135deg, #5499ea 0%, #3175b8 100%);
+}
+
+
+/* UTILITY CLASS: Crucial for fixing the "Next Button Flash" issue.
+   This class is added via TS during data changes to kill animation instantly. */
+.flashcard-item.no-transition,
+.flashcard-item.no-transition .card-content {
+  transition: none !important;
+  animation: none !important;
+}
+
+
+/* Card Content (Children) */
+.card-content {
+  grid-area: stack; /* Stack them on top of each other */
+  width: 100%;
+  height: 100%;
+  
+  /* Flex centers the text inside the content block */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem; /* Ample padding for text */
+  text-align: center;
+  color: white;
+  
+  /* Animation Defaults */
+  transition: none;
+  backface-visibility: hidden;
+}
+
+
+/* --- The "Pop-Fade" Animation Logic --- */
+
+/* QUESTION SIDE (Default State) */
+.question-side {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2; /* On top initially */
+  pointer-events: auto;
+}
+
+/* ANSWER SIDE (Default State) */
+.answer-side {
+  opacity: 0;
+  /* Start slightly smaller so it pops in */
+  transform: scale(0.92); 
+  z-index: 1;
+  pointer-events: none; /* Cannot click hidden element */
+}
+
+
+/* WHEN SHOWING ANSWER */
+
+/* Question fades out and grows slightly */
+.flashcard-item.show-answer .question-side {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+/* Answer pops in to full size */
+.flashcard-item.show-answer .answer-side {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 3; /* Moves to top */
+  pointer-events: auto;
+}
+
+/* --- END ANIMATION CORE --- */
+
+
+.card-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  margin-top: auto;
+}
+
+.card-text {
+  font-size: 1.5rem; /* Slightly larger font */
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+  word-break: break-word;
+  max-width: 600px; /* Prevents text from getting too wide on large screens */
+}
+
+.card-hint {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  font-style: italic;
+  margin-top: auto; /* Pushes hint to bottom if text is short */
+}
+
+/* Controls Section */
+.controls-section {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: auto; /* Pushes controls to bottom of study area */
+  padding-top: 2rem;
+}
+
+.nav-button {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: 'Poppins', sans-serif;
+  background: white;
+  color: #4a90e2;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.nav-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  background: #f8fafc;
+}
+
+.nav-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Progress Bar */
+.progress-bar {
+  flex: 2;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a90e2 0%, #357abd 100%);
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flashcards-page { padding: 1rem 0.5rem; }
+  .flashcards-header { flex-direction: column; gap: 1rem; }
+  .flashcards-study-area { padding: 1.5rem; gap: 1.5rem; }
+  .card-content { padding: 2rem 1.5rem; }
+  .card-text { font-size: 1.25rem; }
+  .controls-section { flex-wrap: wrap; }
+  .progress-bar { flex: 0 1 100%; order: 3; margin-top: 1rem; }
 }

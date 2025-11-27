@@ -32,9 +32,14 @@ export class Questions implements OnInit {
   /**
    * Loads/reloads all flashcards from the backend
    * Handles loading and error states
+   * Only shows loading state on initial load, not on page transitions
    */
   refresh(): void {
-    this.loading = true;
+    // Only show loading state if data hasn't been loaded yet
+    const isInitialLoad = this.data.length === 0;
+    if (isInitialLoad) {
+      this.loading = true;
+    }
     this.error = null;
 
     this.flashcardService.getAll().subscribe({

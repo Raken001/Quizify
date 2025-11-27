@@ -1,54 +1,69 @@
-<div class="header">
-  <h3>Flashcards</h3>
-  <div style="margin:8px 0" *ngIf="subjects.length">
-    <label>
-      Subject:
-      <select [(ngModel)]="selectedSubject" (change)="loadCards()">
-        <option value="">All</option>
-        @for (s of subjects; track s) {
-          <option [value]="s">{{ s }}</option>
-        }
-      </select>
-    </label>
-  </div>
-</div>
-
-<div class="flashcards-container">
-@if (loading) {
-  <p>Loading…</p>
-}
-@if (error) {
-  <p style="color:crimson">{{ error }}</p>
-}
-@if (!loading && !error && !data.length) {
-  <p>No cards yet.</p>
-}
-
-@if (!loading && !error && data.length) {
-  <div style="max-width:600px; margin: 0 auto; text-align: center;">
-    <p>Card {{ index + 1 }} / {{ data.length }} — <em>{{ data[index]?.subject }}</em></p>
-
-  <div (click)="flip()" style="
-    border:1px solid #ccc; border-radius:12px; padding:24px; min-height:200px; max-width: 560px; margin: 0 auto;
-    cursor:pointer; user-select:none; box-shadow:0 2px 6px rgba(0,0,0,0.06); text-align: left;">
-          @if (!showAnswer) {
-        <div>
-          <strong>Q:</strong> {{ data[index]?.question }}
-          <p style="opacity:.6; margin-top:8px">(click to show answer)</p>
-        </div>
-      }
-          @if (showAnswer) {
-        <div>
-          <strong>A:</strong> {{ data[index]?.answer }}
-          <p style="opacity:.6; margin-top:8px">(click to hide answer)</p>
-        </div>
-      }
+<div class="flashcards-page">
+  <div class="flashcards-header">
+    <div class="header-content">
+      <h1>Flashcards</h1>
+      <p class="subtitle">Master your knowledge one card at a time</p>
     </div>
-
-    <div class="flashcard" style="margin-top:12px; display:flex; gap:8px">
-      <button  (click)="prev()">⟵ Prev</button>
-      <button  (click)="next()">Next ⟶</button>
-    </div>
+    @if (subjects.length) {
+      <div class="filter-section">
+        <label for="subject-select" class="filter-label">Subject</label>
+        <select id="subject-select" class="subject-select" [(ngModel)]="selectedSubject" (change)="loadCards()">
+          <option value="">All Subjects</option>
+          @for (s of subjects; track s) { <option [value]="s">{{ s }}</option> }
+        </select>
+      </div>
+    }
   </div>
-}
+
+  <div class="flashcards-container">
+    @if (loading) { <div class="loading-state"><div class="spinner"></div><p>Loading flashcards…</p></div> }
+    @if (error) { <div class="error-state"><p class="error-icon">⚠️</p><p class="error-text">{{ error }}</p></div> }
+    @if (!loading && !error && !data.length) { <div class="empty-state"><p class="empty-icon">📚</p><p>No flashcards yet</p></div> }
+
+    @if (!loading && !error && data.length) {
+      <div class="flashcards-study-area">
+        <div class="progress-info">
+          <div class="progress-text">
+            <span class="current">{{ index + 1 }}</span><span class="divider">/</span><span class="total">{{ data.length }}</span>
+          </div>
+          <div class="subject-tag">{{ data[index]?.subject }}</div>
+        </div>
+
+        <div class="card-wrapper">
+           <div 
+            class="flashcard-item" 
+            [class.show-answer]="showAnswer"
+            [class.no-transition]="isChangingCard"
+            (click)="flip()">
+            
+            <div class="card-content question-side">
+              <div class="card-label">Question</div>
+              <div class="card-text">{{ data[index]?.question }}</div>
+              <div class="card-hint">Click to reveal answer</div>
+            </div>
+            
+            <div class="card-content answer-side">
+              <div class="card-label">Answer</div>
+              <div class="card-text">{{ data[index]?.answer }}</div>
+              <div class="card-hint">Click to hide answer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-section">
+          <button class="nav-button prev-button" (click)="prev()" [disabled]="data.length === 0 || index === 0">
+            <span class="button-icon">←</span> Prev
+          </button>
+          
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="((index + 1) / data.length) * 100"></div>
+          </div>
+          
+          <button class="nav-button next-button" (click)="next()" [disabled]="data.length === 0 || index === data.length - 1">
+            Next <span class="button-icon">→</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 </div>

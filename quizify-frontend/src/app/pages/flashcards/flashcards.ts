@@ -25,6 +25,7 @@ export class Flashcards implements OnInit {
   showAnswer = false;
   subjects: string[] = [];
   selectedSubject: string = '';
+  isChangingCard = false;
 
   constructor(private flashcardService: FlashcardService) {}
 
@@ -53,7 +54,11 @@ export class Flashcards implements OnInit {
    * Resets card index and answer visibility on load
    */
   loadCards(): void {
-    this.loading = true;
+    // Only show loading state on initial load, not on subject changes
+    const isInitialLoad = this.data.length === 0;
+    if (isInitialLoad) {
+      this.loading = true;
+    }
     this.error = null;
 
     const loadRequest$ = this.selectedSubject
@@ -87,6 +92,7 @@ export class Flashcards implements OnInit {
    * Toggles the visibility of the current card's answer
    */
   flip(): void {
+    if (this.isChangingCard) return; // Prevent flipping while data is loading
     this.showAnswer = !this.showAnswer;
   }
 
@@ -95,9 +101,9 @@ export class Flashcards implements OnInit {
    * Wraps around to the beginning if at the end
    */
   next(): void {
-    if (!this.data.length) return;
-    this.index = (this.index + 1) % this.data.length;
-    this.showAnswer = false;
+    if (this.index < this.data.length - 1) {
+      this.changeCard(this.index + 1);
+    }
   }
 
   /**
@@ -105,8 +111,28 @@ export class Flashcards implements OnInit {
    * Wraps around to the end if at the beginning
    */
   prev(): void {
-    if (!this.data.length) return;
-    this.index = (this.index - 1 + this.data.length) % this.data.length;
+    if (this.index > 0) {
+      this.changeCard(this.index - 1);
+    }
+  }
+
+  /**
+   * Helper function to handle card transitions safely
+   * Disables animations during the transition to prevent visual glitches
+   */
+  private changeCard(newIndex: number): void {
+    // Turn on the flag to disable transitions
+    this.isChangingCard = true;
+
+    // Immediately reset to the question side
     this.showAnswer = false;
+
+    // Update the data index
+    this.index = newIndex;
+
+    // Wait for the DOM to settle before re-enabling transitions
+    setTimeout(() => {
+      this.isChangingCard = false;
+    }, 50);
   }
 }

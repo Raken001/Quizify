@@ -24,6 +24,7 @@ export class Navbar implements OnInit, OnDestroy {
   user: any = null;
   loading = true;
   error: string | null = null;
+  private userProfileLoaded = false; // Track if profile has been loaded
   
   // Subject to unsubscribe from observables on component destroy
   private destroy$ = new Subject<void>();
@@ -49,10 +50,12 @@ export class Navbar implements OnInit, OnDestroy {
       .subscribe((isLoggedIn: boolean) => {
         if (isLoggedIn) {
           // User logged in - reload profile to get new user's data
+          this.userProfileLoaded = false; // Reset cache so profile is reloaded
           this.loadUserProfile();
         } else {
           // User logged out - clear the navbar user data
           this.user = null;
+          this.userProfileLoaded = false;
           this.loading = false;
         }
       });
@@ -62,8 +65,15 @@ export class Navbar implements OnInit, OnDestroy {
    * Loads the current user's profile information
    * Sets user role, name, and stats for display in navbar
    * Handles loading and error states
+   * Only loads once per login to avoid unnecessary API calls
    */
   private loadUserProfile(): void {
+    // Skip if already loaded to prevent flicker on navigation
+    if (this.userProfileLoaded && this.user) {
+      this.loading = false;
+      return;
+    }
+
     this.loading = true;
     this.userService.getProfile()
       .pipe(takeUntil(this.destroy$))
@@ -76,10 +86,12 @@ export class Navbar implements OnInit, OnDestroy {
             role: data.role || 'user',
             stats: data.stats
           };
+          this.userProfileLoaded = true;
           this.loading = false;
         },
         error: (err: any) => {
           this.error = err?.error?.error || 'Failed to load profile';
+          this.userProfileLoaded = true;
           this.loading = false;
         }
       });

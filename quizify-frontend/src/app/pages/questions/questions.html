@@ -1,45 +1,47 @@
-<h3>Questions</h3>
+<div class="questions-page">
+  <h3>Questions</h3>
 
-@if (loading) { <p>Loading…</p> }
-@if (error)   { <p style="color:crimson">{{ error }}</p> }
+  @if (loading) { <p>Loading…</p> }
+  @if (error)   { <p style="color:crimson">{{ error }}</p> }
 
-<div class="toolbar">
-  <a class="btn btn-outline" routerLink="/flashcards">Study as Flashcards</a>
-  <a class="btn" routerLink="/questions/add">+ Add Question</a>
-</div>
-
-@if (!loading && !error && data.length) {
-  <div class="table-wrap">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Subject</th>
-          <th>Question</th>
-          <th>Answer</th>
-          <th>Options</th>
-          <th>Difficulty</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (q of data; track q._id || q.id) {
-          <tr>
-            <td>{{ q.subject }}</td>
-            <td>{{ q.question }}</td>
-            <td>{{ q.answer || q.correct_answer }}</td>
-            <td>{{ q.options?.length ? q.options.join(', ') : '-' }}</td>
-            <td>{{ difficultyLabel(q) }}</td>
-            <td>
-              <div class="actions">
-                <a class="btn btn-outline" [routerLink]="['/questions/edit', (q._id || q.id)]">Edit</a>
-                <button class="btn" (click)="delete(q._id || q.id)">Delete</button>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <div class="toolbar">
+    <a class="btn btn-outline" routerLink="/flashcards">Study as Flashcards</a>
+    <a class="btn" routerLink="/questions/add">+ Add Question</a>
   </div>
-}
 
-@if (!loading && !error && !data.length) { <p>No questions yet.</p> }
+  @if (!loading && !error && data.length) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Options</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (q of data; track q._id || q.id) {
+            <tr>
+              <td>{{ q.subject }}</td>
+              <td>{{ q.question }}</td>
+              <td>{{ q.answer || q.correct_answer }}</td>
+              <td>{{ q.options?.length ? q.options.join(', ') : '-' }}</td>
+              <td>{{ difficultyLabel(q) }}</td>
+              <td>
+                <div class="actions">
+                  <a class="btn btn-outline" [routerLink]="['/questions/edit', (q._id || q.id)]">Edit</a>
+                  <button class="btn" (click)="delete(q._id || q.id)">Delete</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (!loading && !error && !data.length) { <p>No questions yet.</p> }
+</div>
