@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
@@ -25,6 +25,7 @@ export class Navbar implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
   private userProfileLoaded = false; // Track if profile has been loaded
+  routerLinkActiveOptions = { exact: true };
   
   // Subject to unsubscribe from observables on component destroy
   private destroy$ = new Subject<void>();

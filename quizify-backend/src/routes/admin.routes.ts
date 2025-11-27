@@ -17,43 +17,50 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    let stats = await SystemStats.findOne({ date: today });
-    if (!stats) {
-      // Calculate stats for today
-      const activeUsers = await User.countDocuments({ 'stats.lastStudyDate': { $gte: today } });
-      const newUsers = await User.countDocuments({ createdAt: { $gte: today } });
-      const totalFlashcards = await Flashcard.countDocuments();
-      const completedQuizzes = await QuizResult.countDocuments({ completedAt: { $gte: today } });
-      const results = await QuizResult.find({ completedAt: { $gte: today } }).select('summary.score').lean();
-      const averageQuizScore = results.length > 0 ? Math.round(results.reduce((sum, r) => sum + (r.summary.score || 0), 0) / results.length) : 0;
-      
-      // Calculate total study time from quiz sessions for today
-      const quizSessions = await QuizSession.find({ createdAt: { $gte: today }, status: 'completed' })
-        .select('totalTime')
-        .lean();
-      const totalStudyTime = quizSessions.reduce((sum: number, session: any) => sum + (session.totalTime || 0), 0);
-      
-      stats = await SystemStats.create({
-        date: today,
+    
+    // Always recalculate stats for today (don't use cache)
+    const activeUsers = await User.countDocuments({ 'stats.lastStudyDate': { $gte: today } });
+    const newUsers = await User.countDocuments({ createdAt: { $gte: today } });
+    
+    // Calculate total flashcards by summing up each user's actual flashcard count
+    const users = await User.find().select('_id').lean();
+    let totalFlashcards = 0;
+    for (const user of users) {
+      const userFlashcardCount = await Flashcard.countDocuments({ userId: user._id });
+      totalFlashcards += userFlashcardCount;
+    }
+    
+    const completedQuizzes = await QuizResult.countDocuments({ completedAt: { $gte: today } });
+    const results = await QuizResult.find({ completedAt: { $gte: today } }).select('summary.score').lean();
+    const averageQuizScore = results.length > 0 ? Math.round(results.reduce((sum, r) => sum + (r.summary.score || 0), 0) / results.length) : 0;
+    
+    // Calculate total study time from quiz sessions for today
+    const quizSessions = await QuizSession.find({ createdAt: { $gte: today }, status: 'completed' })
+      .select('totalTime')
+      .lean();
+    const totalStudyTime = quizSessions.reduce((sum: number, session: any) => sum + (session.totalTime || 0), 0);
+    
+    // Count new flashcards created today
+    const newFlashcards = await Flashcard.countDocuments({ createdAt: { $gte: today } });
+    
+    // Always get overall system stats
+    const totalUsers = await User.countDocuments();
+    const totalQuizzes = await QuizResult.countDocuments();
+    
+    res.json({
+      today: {
         stats: {
-          totalUsers: await User.countDocuments(),
+          totalUsers,
           activeUsers,
           newUsers,
           totalFlashcards,
-          newFlashcards: 0, // Not tracked in this example
-          totalQuizzes: await QuizResult.countDocuments(),
+          newFlashcards,
+          totalQuizzes,
           completedQuizzes,
           averageQuizScore,
           totalStudyTime
         }
-      });
-    }
-    // Also get overall system stats
-    const totalUsers = await User.countDocuments();
-    const totalFlashcards = await Flashcard.countDocuments();
-    const totalQuizzes = await QuizResult.countDocuments();
-    res.json({
-      today: stats,
+      },
       overall: {
         totalUsers,
         totalFlashcards,
@@ -82,9 +89,24 @@ router.get('/users', async (req: AuthRequest, res: Response) => {
       .skip(skip)
       .limit(limitNum)
       .lean();
+    
+    // Calculate actual flashcard counts for each user
+    const usersWithActualCounts = await Promise.all(
+      users.map(async (user: any) => {
+        const actualFlashcardCount = await Flashcard.countDocuments({ userId: user._id });
+        return {
+          ...user,
+          stats: {
+            ...user.stats,
+            totalFlashcards: actualFlashcardCount
+          }
+        };
+      })
+    );
+    
     const total = await User.countDocuments(query);
     res.json({
-      users,
+      users: usersWithActualCounts,
       pagination: {
         page: pageNum,
         limit: limitNum,

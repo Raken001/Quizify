@@ -1,26 +1,60 @@
 @if (loading) {
-  <p>Loading user info...</p>
+  <div class="profile-page">
+    <div class="loading-state">Loading user info...</div>
+  </div>
 }
 @if (error) {
-  <p style="color: red">{{ error }}</p>
+  <div class="profile-page">
+    <div class="error">{{ error }}</div>
+  </div>
 }
 @if (user && !loading) {
-  <div class="profile-container">
-    <h2>User Profile</h2>
-    <div class="profile-info">
-      <div><strong>Email:</strong> {{ user.email }}</div>
-      <div><strong>First Name:</strong> {{ user.firstName }}</div>
-      <div><strong>Last Name:</strong> {{ user.lastName }}</div>
-      <div><strong>Role:</strong> {{ user.role }}</div>
-      @if (user.stats) {
-        <hr />
-        <h3>Statistics</h3>
-        <div><strong>Total Flashcards:</strong> {{ user.stats.totalFlashcards }}</div>
-        <div><strong>Quizzes Taken:</strong> {{ user.stats.quizzesTaken }}</div>
-        <div><strong>Average Score:</strong> {{ user.stats.averageScore }}%</div>
-        <div><strong>Study Streak:</strong> {{ user.stats.studyStreak }} days</div>
-      }
+  <div class="profile-page">
+    <div class="profile-container">
+      <h2>User Profile</h2>
+      <div class="profile-info">
+        <div class="info-item">
+          <span class="label">First Name:</span>
+          <span class="value">{{ user.firstName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Last Name:</span>
+          <span class="value">{{ user.lastName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Email:</span>
+          <span class="value">{{ user.email }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Role:</span>
+          <span class="role-badge">{{ user.role }}</span>
+        </div>
+        @if (user.stats) {
+          <div class="divider"></div>
+          <h3>Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Total Flashcards</span>
+              <span class="stat-value">{{ user.stats.totalFlashcards }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Quizzes Taken</span>
+              <span class="stat-value">{{ user.stats.quizzesTaken }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Average Score</span>
+              <span class="stat-value">{{ user.stats.averageScore }}%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Study Streak</span>
+              <span class="stat-value">{{ user.stats.studyStreak }} days</span>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="button-group">
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
     </div>
-    <button (click)="logout()">Logout</button>
   </div>
 }

@@ -55,11 +55,15 @@ export class Admin implements OnInit {
 
   /**
    * Deletes a user account by ID
+   * Shows confirmation dialog before deletion
    * Reloads user list after successful deletion
    * 
    * @param id - User ID to delete
    */
   deleteUser(id: string) {
+    const confirmed = confirm('Are you sure you want to delete this user? This action cannot be undone. All their flashcards and quiz data will also be deleted.');
+    if (!confirmed) return;
+    
     this.adminService.deleteUser(id).subscribe({
       next: () => this.load(),
       error: err => {
@@ -70,12 +74,16 @@ export class Admin implements OnInit {
 
   /**
    * Promotes a user to admin role
+   * Shows confirmation dialog before promotion
    * Changes user's role from 'user' to 'admin'
    * Reloads user list after successful promotion
    * 
    * @param id - User ID to promote to admin
    */
   promoteUser(id: string) {
+    const confirmed = confirm('Are you sure you want to promote this user to admin? They will have access to admin features.');
+    if (!confirmed) return;
+    
     this.adminService.promoteUser(id).subscribe({
       next: () => this.load(),
       error: err => {

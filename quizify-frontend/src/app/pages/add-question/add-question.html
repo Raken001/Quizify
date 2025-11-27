@@ -1,30 +1,51 @@
-<h3>{{ isEdit ? 'Edit Question' : 'Add Question' }}</h3>
+<div class="form-container">
+  <h3>{{ isEdit ? 'Edit Question' : 'Add Question' }}</h3>
 
-<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
   
   <div class="form-group">
-    <label>Subject</label>
+    <label>Subject <span class="required">*</span></label>
     <input type="text" formControlName="subject" placeholder="e.g., Math" />
   </div>
 
   <div class="form-group">
-    <label>Question</label>
+    <label>Question <span class="required">*</span></label>
     <input type="text" formControlName="question" placeholder="e.g., What is 2+2?" />
   </div>
 
-  <div class="form-group">
-    <label>Options (Optional)</label>
-    <input type="text" formControlName="optionsCsv" placeholder="e.g., 3, 4, 5" />
-    <small>Enter multiple choice options separated by commas</small>
+  <div class="options-section">
+    <h4>Options</h4>
+    <div class="form-group">
+      <label>Option 1 <span class="required">*</span></label>
+      <input type="text" formControlName="option1" placeholder="Enter first option" />
+    </div>
+    <div class="form-group">
+      <label>Option 2 <span class="required">*</span></label>
+      <input type="text" formControlName="option2" placeholder="Enter second option" />
+    </div>
+    <div class="form-group">
+      <label>Option 3 <span class="required">*</span></label>
+      <input type="text" formControlName="option3" placeholder="Enter third option" />
+    </div>
+    <div class="form-group">
+      <label>Option 4 <span class="required">*</span></label>
+      <input type="text" formControlName="option4" placeholder="Enter fourth option" />
+    </div>
   </div>
 
   <div class="form-group">
-    <label>Answer</label>
-    <input type="text" formControlName="answer" placeholder="e.g., 4" />
+    <label>Correct Answer <span class="required">*</span></label>
+    <select formControlName="answer">
+      <option value="" disabled selected>Select the correct answer</option>
+      <option [value]="option1Value">{{ option1Value }}</option>
+      <option [value]="option2Value">{{ option2Value }}</option>
+      <option [value]="option3Value">{{ option3Value }}</option>
+      <option [value]="option4Value">{{ option4Value }}</option>
+    </select>
   </div>
 
   <div class="form-group">
-    <label>Difficulty</label>
+    <label>Difficulty <span class="required">*</span></label>
     <select formControlName="difficulty">
       <option value="easy">Easy</option>
       <option value="medium">Medium</option>
@@ -39,14 +60,15 @@
     <a class="btn btn-outline" routerLink="/questions">Cancel</a>
   </div>
 
-</form>
+  </form>
 
-@if (submitting) {
-  <p class="message">Saving…</p>
-}
-@if (error) {
-  <p class="message error">{{ error }}</p>
-}
-@if (success) {
-  <p class="message success">{{ success }}</p>
-}
+  @if (submitting) {
+    <p class="message">Saving…</p>
+  }
+  @if (error) {
+    <p class="message error">{{ error }}</p>
+  }
+  @if (success) {
+    <p class="message success">{{ success }}</p>
+  }
+</div>

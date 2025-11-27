@@ -1,69 +1,72 @@
-<div class="stats-container">
-  <h2>System Statistics</h2>
+<div class="stats-page">
+  <div class="stats-container">
+    <div class="header-section">
+      <h2>System Statistics</h2>
+      <p class="subtitle">Monitor your platform analytics and activity</p>
+    </div>
 
-  @if (loading) {
-    <div class="loading">Loading statistics...</div>
-  } @else if (error) {
-    <div class="error">{{ error }}</div>
-  } @else {
-    <!-- Overall Stats -->
-    <section class="stats-section">
-      <h3>Overall Statistics</h3>
-      <div class="table-wrap">
-        <table class="table">
-          <tbody>
-            <tr>
-              <td>Total Users</td>
-              <td>{{ overallStats?.totalUsers || 0 }}</td>
-            </tr>
-            <tr>
-              <td>Total Flashcards</td>
-              <td>{{ overallStats?.totalFlashcards || 0 }}</td>
-            </tr>
-            <tr>
-              <td>Total Quizzes</td>
-              <td>{{ overallStats?.totalQuizzes || 0 }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Today's Stats -->
-    @if (todayStats) {
+    @if (loading) {
+      <div class="loading-state">Loading statistics...</div>
+    } @else if (error) {
+      <div class="error">{{ error }}</div>
+    } @else {
+      <!-- Overall Stats -->
       <section class="stats-section">
-        <h3>Today's Activity</h3>
-        <div class="table-wrap">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>Active Users</td>
-                <td>{{ todayStats.activeUsers }}</td>
-              </tr>
-              <tr>
-                <td>New Users Today</td>
-                <td>{{ todayStats.newUsers }}</td>
-              </tr>
-              <tr>
-                <td>Completed Quizzes</td>
-                <td>{{ todayStats.completedQuizzes }}</td>
-              </tr>
-              <tr>
-                <td>Average Quiz Score</td>
-                <td>{{ todayStats.averageQuizScore }}%</td>
-              </tr>
-              <tr>
-                <td>New Flashcards</td>
-                <td>{{ todayStats.newFlashcards }}</td>
-              </tr>
-              <tr>
-                <td>Total Study Time</td>
-                <td>{{ formatStudyTime(todayStats.totalStudyTime) }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <h3>Overall Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-number">{{ overallStats?.totalUsers || 0 }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Flashcards</div>
+            <div class="stat-number">{{ overallStats?.totalFlashcards || 0 }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Quizzes</div>
+            <div class="stat-number">{{ overallStats?.totalQuizzes || 0 }}</div>
+          </div>
         </div>
       </section>
+
+      <!-- Today's Stats -->
+      @if (todayStats) {
+        <section class="stats-section">
+          <h3>Today's Activity</h3>
+          <div class="table-wrapper">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="metric-label">Active Users</td>
+                  <td class="metric-value">{{ todayStats.activeUsers }}</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">New Users Today</td>
+                  <td class="metric-value">{{ todayStats.newUsers }}</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">Completed Quizzes</td>
+                  <td class="metric-value">{{ todayStats.completedQuizzes }}</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">Average Quiz Score</td>
+                  <td class="metric-value">{{ todayStats.averageQuizScore }}%</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">New Flashcards</td>
+                  <td class="metric-value">{{ todayStats.newFlashcards }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
     }
-  }
+  </div>
 </div>

@@ -41,13 +41,17 @@ export class AddQuestion implements OnInit {
 
   /**
    * Initializes the form with validators
-   * Fields: subject, question, optionsCsv, answer, difficulty
+   * Fields: subject, question, option1-4, answer, difficulty
+   * All options are now mandatory
    */
   private initializeForm(): void {
     this.form = this.fb.group({
       subject: ['', Validators.required],
       question: ['', Validators.required],
-      optionsCsv: [''],        // comma-separated options (optional)
+      option1: ['', Validators.required],
+      option2: ['', Validators.required],
+      option3: ['', Validators.required],
+      option4: ['', Validators.required],
       answer: ['', Validators.required],
       difficulty: ['medium', Validators.required]
     });
@@ -73,11 +77,14 @@ export class AddQuestion implements OnInit {
   private loadFlashcardForEdit(id: string): void {
     this.flashcardService.getById(id).subscribe({
       next: (q: any) => {
-        const optionsCsv = Array.isArray(q.options) ? q.options.join(', ') : '';
+        const options = Array.isArray(q.options) ? q.options : ['', '', '', ''];
         this.form.patchValue({
           subject: q.subject || '',
           question: q.question || '',
-          optionsCsv,
+          option1: options[0] || '',
+          option2: options[1] || '',
+          option3: options[2] || '',
+          option4: options[3] || '',
           answer: q.answer || '',
           difficulty: q.difficulty || 'medium'
         });
@@ -103,18 +110,12 @@ export class AddQuestion implements OnInit {
     }
 
     this.submitting = true;
-    const { subject, question, optionsCsv, answer, difficulty } = this.form.value;
+    const { subject, question, option1, option2, option3, option4, answer, difficulty } = this.form.value;
 
-    // Transform "a, b, c" -> ["a","b","c"] (only if options provided)
-    const options = optionsCsv
-      ? String(optionsCsv)
-          .split(',')
-          .map((s: string) => s.trim())
-          .filter((s: string) => s.length > 0)
-      : [];
+    // Collect all options into an array
+    const options = [option1, option2, option3, option4];
 
-    const payload: any = { subject, question, answer, difficulty };
-    if (options.length) payload.options = options;
+    const payload: any = { subject, question, options, answer, difficulty };
 
     // Call appropriate service method based on edit mode
     const request$ = this.isEdit && this.editingId
@@ -133,5 +134,33 @@ export class AddQuestion implements OnInit {
         this.submitting = false;
       }
     });
+  }
+
+  /**
+   * Getter for option1 value for dropdown
+   */
+  get option1Value(): string {
+    return this.form.get('option1')?.value || '';
+  }
+
+  /**
+   * Getter for option2 value for dropdown
+   */
+  get option2Value(): string {
+    return this.form.get('option2')?.value || '';
+  }
+
+  /**
+   * Getter for option3 value for dropdown
+   */
+  get option3Value(): string {
+    return this.form.get('option3')?.value || '';
+  }
+
+  /**
+   * Getter for option4 value for dropdown
+   */
+  get option4Value(): string {
+    return this.form.get('option4')?.value || '';
   }
 }

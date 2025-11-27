@@ -52,6 +52,11 @@
   align-items: center;
 }
 
+.nav-links li.active .nav-link {
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
 .nav-link {
   color: white;
   text-decoration: none;
@@ -62,6 +67,11 @@
   transition: all 0.3s ease;
   cursor: pointer;
   display: inline-block;
+}
+
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
 }
 
 .nav-link:hover {

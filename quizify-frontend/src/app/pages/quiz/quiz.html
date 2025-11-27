@@ -1,8 +1,9 @@
-<div class="quiz-container">
-  <h2>Quiz</h2>
-  
-  @if (!quizStarted) {
-    <div class="quiz-setup">
+<div class="quiz-page">
+  <div class="quiz-container">
+    <h2>Quiz</h2>
+    
+    @if (!quizStarted) {
+      <div class="quiz-setup">
       <p>Select a subject to start your quiz:</p>
       <div style="margin: 1rem 0;">
         <label>
@@ -69,9 +70,11 @@
           <p><strong>Time Spent:</strong> {{ result.summary.timeSpent }} seconds</p>
         </div>
       }
-      <div style="margin-top: 20px;">
+      <div style="margin-top: 20px; display: flex; gap: 1rem; justify-content: center;">
         <button (click)="restartQuiz()">Take Another Quiz</button>
+        <button routerLink="/flashcards">Go to Flashcards</button>
       </div>
     </div>
   }
+</div>
 </div>
