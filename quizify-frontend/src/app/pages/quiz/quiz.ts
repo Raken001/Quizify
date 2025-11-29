@@ -30,6 +30,7 @@ export class Quiz implements OnInit {
   form: FormGroup;
   quizComplete = false;
   selectedOption: string | null = null;
+  randomizedOptions: string[] = [];
 
   constructor(private quizService: QuizService, private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -79,6 +80,7 @@ export class Quiz implements OnInit {
         this.sessionId = data.sessionId;
         this.totalQuestions = data.totalQuestions;
         this.currentQuestion = data.firstQuestion;
+        this.randomizedOptions = this.randomizeOptions(this.currentQuestion.options);
         this.currentQuestionIndex = 0;
         this.loading = false;
         this.form.reset();
@@ -146,6 +148,7 @@ export class Quiz implements OnInit {
         
         if (nextQuestion) {
           this.currentQuestion = nextQuestion;
+          this.randomizedOptions = this.randomizeOptions(nextQuestion.options);
           this.form.reset();
           this.selectedOption = null;
           this.loading = false;
@@ -215,17 +218,28 @@ export class Quiz implements OnInit {
     this.quizComplete = false;
     this.quizStarted = false;
     this.selectedSubject = '';
+    this.randomizedOptions = [];
   }
 
   /**
    * Extracts options from current question
-   * Returns empty array if question doesn't have multiple choice options
+   * Returns the pre-randomized options to maintain consistency
    * @returns Array of option strings
    */
   getOptions(): string[] {
-    if (!this.currentQuestion) return [];
-    const opts = Array.isArray(this.currentQuestion.options) ? this.currentQuestion.options : [];
-    // Ensure string array
-    return (opts || []).map((o: any) => String(o));
+    return this.randomizedOptions;
+  }
+
+  /**
+   * Randomizes the order of options
+   * Creates a new array with shuffled options to maintain consistency
+   * @param options Original options array
+   * @returns Randomized copy of options array
+   */
+  private randomizeOptions(options: any[]): string[] {
+    if (!Array.isArray(options)) return [];
+    const stringOptions = options.map((o: any) => String(o));
+    // Create a copy and shuffle
+    return [...stringOptions].sort(() => Math.random() - 0.5);
   }
 }
