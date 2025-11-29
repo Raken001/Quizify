@@ -51,7 +51,7 @@
         </div>
 
         <div class="controls-section">
-          <button class="nav-button prev-button" (click)="prev()" [disabled]="data.length === 0 || index === 0">
+          <button class="nav-button prev-button" (click)="prev()" [disabled]="data.length === 0">
             <span class="button-icon">←</span> Prev
           </button>
           
@@ -59,7 +59,7 @@
             <div class="progress-fill" [style.width.%]="((index + 1) / data.length) * 100"></div>
           </div>
           
-          <button class="nav-button next-button" (click)="next()" [disabled]="data.length === 0 || index === data.length - 1">
+          <button class="nav-button next-button" (click)="next()" [disabled]="data.length === 0">
             Next <span class="button-icon">→</span>
           </button>
         </div>

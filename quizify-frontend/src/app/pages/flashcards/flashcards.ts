@@ -101,9 +101,8 @@ export class Flashcards implements OnInit {
    * Wraps around to the beginning if at the end
    */
   next(): void {
-    if (this.index < this.data.length - 1) {
-      this.changeCard(this.index + 1);
-    }
+    const nextIndex = (this.index + 1) % this.data.length;
+    this.changeCard(nextIndex);
   }
 
   /**
@@ -111,9 +110,8 @@ export class Flashcards implements OnInit {
    * Wraps around to the end if at the beginning
    */
   prev(): void {
-    if (this.index > 0) {
-      this.changeCard(this.index - 1);
-    }
+    const prevIndex = (this.index - 1 + this.data.length) % this.data.length;
+    this.changeCard(prevIndex);
   }
 
   /**
